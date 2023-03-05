@@ -1,6 +1,8 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
 import renderWithProviders from "./utils/renderWithProvider";
+
 import App from "./App";
 
 describe("When I navigate to the home page", () => {
@@ -20,16 +22,16 @@ describe("When I navigate to the home page", () => {
         length: 1,
       };
     };
+
+    renderWithProviders(<App />);
   });
 
   it("renders watch later link", () => {
-    renderWithProviders(<App />);
     const linkElement = screen.getByText(/watch later/i);
     expect(linkElement).toBeInTheDocument();
   });
 
   it("allows me to search for a movie and view the trailer", async () => {
-    renderWithProviders(<App />);
     await userEvent.type(screen.getByTestId("search-movies"), "forrest gump");
     await waitFor(() => {
       expect(
@@ -44,7 +46,6 @@ describe("When I navigate to the home page", () => {
   });
 
   it("renders the watch later component", async () => {
-    renderWithProviders(<App />);
     const user = userEvent.setup();
     await user.click(screen.getByText(/watch later/i));
     expect(
@@ -53,7 +54,6 @@ describe("When I navigate to the home page", () => {
   });
 
   it("renders the starred component", async () => {
-    renderWithProviders(<App />);
     const user = userEvent.setup();
     await user.click(screen.getByTestId("nav-starred"));
     expect(
