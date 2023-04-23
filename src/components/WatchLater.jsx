@@ -1,10 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+
 import watchLaterSlice from "../data/watchLaterSlice";
 import Movie from "./Movie";
 
-import "../styles/starred.scss";
 import { watchLaterSelector } from "../data/selector";
+
+import "../styles/starred.scss";
 
 // probably can join this with starred and make it one component
 export const WatchLater = ({ viewTrailer }) => {
@@ -33,7 +35,7 @@ export const WatchLater = ({ viewTrailer }) => {
               className="btn btn-primary"
               onClick={handleEmptyListBtnClick}
             >
-              Empty list
+              Clear all
             </button>
           </footer>
         </div>

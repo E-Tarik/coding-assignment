@@ -4,7 +4,12 @@ import Popup from "reactjs-popup";
 import "../styles/movies.scss";
 
 export const YouTubePlayerModal = ({ videoKey, isOpen, onCloseModal }) => (
-  <Popup open={isOpen} closeOnDocumentClick={true} modal={true}>
+  <Popup
+    open={isOpen}
+    closeOnDocumentClick={true}
+    modal={true}
+    onClose={onCloseModal}
+  >
     <div className="play-modal">
       <button type="button" className="close" onClick={onCloseModal}>
         &times;

@@ -1,19 +1,8 @@
 import { useEffect, useState } from "react";
-import {
-  Routes,
-  Route,
-  createSearchParams,
-  useSearchParams,
-  useNavigate,
-} from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchMovies } from "./data/moviesSlice";
-import {
-  ENDPOINT_SEARCH,
-  ENDPOINT_DISCOVER,
-  ENDPOINT,
-  API_KEY,
-} from "./constants";
+import { Routes, Route, useNavigate, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import { ENDPOINT, API_KEY } from "./constants";
 import { Header } from "./components/Header";
 import { Movies } from "./components/Movies";
 import { Starred } from "./components/Starred";
@@ -24,64 +13,43 @@ import { moviesSelector } from "./data/selector";
 import "reactjs-popup/dist/index.css";
 import "./app.scss";
 
-const App = () => {
-  const dispatch = useDispatch();
+export const App = () => {
   const navigate = useNavigate();
-
   const [searchParams, setSearchParams] = useSearchParams();
+
   const movies = useSelector(moviesSelector);
-  const searchQuery = searchParams.get("search");
   const [videoKey, setVideoKey] = useState(null);
   const [isOpen, setOpen] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    getMovies();
+    getSearchResults();
     return () => {
       setVideoKey(null);
       setOpen(false);
     };
   }, [setVideoKey, setOpen]);
+
   const closeModal = () => {
     setVideoKey(null);
     setOpen(false);
   };
 
-  const getSearchResults = (query) => {
-    if (query !== "") {
-      dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=${query}`));
-      setSearchParams(createSearchParams({ search: query }));
-    } else {
-      dispatch(fetchMovies(ENDPOINT_DISCOVER));
-      setSearchParams();
-    }
-  };
+  const getSearchResults = (query) => {};
 
   const searchMovies = (query) => {
     navigate("/");
     getSearchResults(query);
   };
 
-  const getMovies = () => {
-    if (searchQuery) {
-      dispatch(
-        fetchMovies(`${ENDPOINT_SEARCH}&query=${searchQuery}&page=${page}`)
-      );
-    } else {
-      dispatch(fetchMovies(ENDPOINT_DISCOVER));
-    }
-  };
-
   const viewTrailer = (movie) => {
     console.log("open modal for", movie.title, movie);
-    getMovie(movie.id)
+    loadTrailer(movie.id)
       // what
       .then(() => setOpen(true))
       .catch((error) => console.log(error));
   };
 
-  const getMovie = async (id) => {
+  const loadTrailer = async (id) => {
     // todo move to separate file
     const URL = `${ENDPOINT}/movie/${id}?api_key=${API_KEY}&append_to_response=videos`;
 
@@ -100,7 +68,7 @@ const App = () => {
         console.log(error)
       );
   };
-  console.log("isOpen", isOpen, "videoKey", videoKey);
+
   return (
     <div className="App">
       <Header
@@ -143,5 +111,3 @@ const App = () => {
     </div>
   );
 };
-
-export default App;

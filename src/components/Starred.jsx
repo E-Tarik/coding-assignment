@@ -2,14 +2,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Movie from "./Movie";
+
 import starredSlice from "../data/starredSlice";
 import { starredMoviesSelector } from "../data/selector";
+
 import "../styles/starred.scss";
 
 export const Starred = ({ viewTrailer }) => {
   const starred = useSelector(starredMoviesSelector);
   const { clearAllStarred } = starredSlice.actions;
   const dispatch = useDispatch();
+
   const handleClearStarredBtnClick = () => {
     dispatch(clearAllStarred());
   };
@@ -29,7 +32,7 @@ export const Starred = ({ viewTrailer }) => {
               className="btn btn-primary"
               onClick={handleClearStarredBtnClick}
             >
-              Remove all starred
+              Clear all
             </button>
           </footer>
         </div>
