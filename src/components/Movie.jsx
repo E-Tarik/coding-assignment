@@ -17,11 +17,12 @@ const Movie = ({ movie, viewTrailer }) => {
   const { starMovie, unstarMovie } = starredSlice.actions;
 
   const { addToWatchLater, removeFromWatchLater } = watchLaterSlice.actions;
+
   const handleStarMovieBtnClick = () => {
     dispatch(starMovie(metadata));
   };
-  const handleWatchLaterBtnClick = () => {
-    dispatch(addToWatchLater());
+  const handleWatchLaterBtnClick = (movie) => {
+    dispatch(addToWatchLater(movie));
   };
   const handleRemoveFromListBtnClick = (movie) => {
     dispatch(removeFromWatchLater(movie));
@@ -75,7 +76,7 @@ const Movie = ({ movie, viewTrailer }) => {
                 className="btn btn-light btn-watch-later blue"
                 onClick={() => handleRemoveFromListBtnClick(movie)}
               >
-                <i className="bi bi-check"></i>
+                <i className="bi bi-check" />
               </button>
             )}
             <button

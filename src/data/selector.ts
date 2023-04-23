@@ -10,6 +10,6 @@ export const watchLaterSelector = (state: AppState) => {
 };
 
 export const starredMoviesSelector = (state: AppState) => {
-  console.log(state);
+  // console.log(state);
   return state.starred.starredMovies;
 };

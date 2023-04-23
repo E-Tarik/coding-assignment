@@ -36,7 +36,17 @@ const App = () => {
   const [isLoading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
-  const closeModal = () => setOpen(false);
+  useEffect(() => {
+    getMovies();
+    return () => {
+      setVideoKey(null);
+      setOpen(false);
+    };
+  }, [setVideoKey, setOpen]);
+  const closeModal = () => {
+    setVideoKey(null);
+    setOpen(false);
+  };
 
   const getSearchResults = (query) => {
     if (query !== "") {
@@ -64,6 +74,7 @@ const App = () => {
   };
 
   const viewTrailer = (movie) => {
+    console.log("open modal for", movie.title, movie);
     getMovie(movie.id)
       // what
       .then(() => setOpen(true))
@@ -89,11 +100,7 @@ const App = () => {
         console.log(error)
       );
   };
-
-  useEffect(() => {
-    getMovies();
-  }, []);
-
+  console.log("isOpen", isOpen, "videoKey", videoKey);
   return (
     <div className="App">
       <Header
@@ -103,7 +110,11 @@ const App = () => {
       />
 
       <div className="container">
-        <YouTubePlayerModal isOpen={isOpen} videoKey={videoKey} />)
+        <YouTubePlayerModal
+          isOpen={isOpen}
+          videoKey={videoKey}
+          onCloseModal={closeModal}
+        />
         <Routes>
           <Route
             path="/"
