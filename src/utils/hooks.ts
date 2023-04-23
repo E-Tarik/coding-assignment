@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from "../constants";
-import { fetchMovies } from "../data/moviesSlice";
-import { useDispatch } from "react-redux";
 import { createSearchParams, useSearchParams } from "react-router-dom";
+import axios from "axios";
+
+import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from "../constants";
 
 export const useSearch = (query: string, page = 1) => {
-  const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [movies, setMovies] = useState([]);
@@ -15,13 +14,13 @@ export const useSearch = (query: string, page = 1) => {
   const searchQuery = searchParams.get("search");
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
     if (query !== "") {
-      //@ts-ignore
-      dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=${query}`));
+      axios.get(`${ENDPOINT_SEARCH}&query=${query}`);
       setSearchParams(createSearchParams({ search: query }));
     } else {
-      //@ts-ignore
-      dispatch(fetchMovies(ENDPOINT_DISCOVER));
+      axios.get(ENDPOINT_DISCOVER);
       setSearchParams();
     }
   }, [query, page]);
