@@ -17,11 +17,23 @@ export const useSearch = (query: string, page = 1) => {
     setLoading(true);
     setError(null);
     if (query !== "") {
-      axios.get(`${ENDPOINT_SEARCH}&query=${query}`);
+      axios.get(`${ENDPOINT_SEARCH}&query=${query}`).then((res) => {
+        console.log("res 1", query, res.data.results);
+
+        setMovies(res.data.results);
+        setTotalPages(res.data.total_pages);
+        setLoading(false);
+      });
       setSearchParams(createSearchParams({ search: query }));
     } else {
-      axios.get(ENDPOINT_DISCOVER);
+      axios.get(ENDPOINT_DISCOVER).then((res) => {
+        console.log("res 2", res);
+        setMovies(res.data.results);
+        setTotalPages(res.data.total_pages);
+        setLoading(false);
+      });
       setSearchParams();
     }
   }, [query, page]);
+  return [movies];
 };

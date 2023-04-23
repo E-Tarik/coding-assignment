@@ -12,17 +12,17 @@ import { moviesSelector } from "./data/selector";
 
 import "reactjs-popup/dist/index.css";
 import "./app.scss";
+import { useSearch } from "./utils/hooks";
 
 export const App = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const movies = useSelector(moviesSelector);
   const [videoKey, setVideoKey] = useState(null);
   const [isOpen, setOpen] = useState(false);
-
+  const [movies] = useSearch(searchParams.get("query"));
   useEffect(() => {
-    getSearchResults();
+    // getSearchResults();
     return () => {
       setVideoKey(null);
       setOpen(false);
@@ -34,11 +34,9 @@ export const App = () => {
     setOpen(false);
   };
 
-  const getSearchResults = (query) => {};
-
   const searchMovies = (query) => {
     navigate("/");
-    getSearchResults(query);
+    // todo searh movies
   };
 
   const viewTrailer = (movie) => {
