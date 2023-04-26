@@ -11,29 +11,44 @@ export const useSearch = (query: string, page = 1) => {
   const [totalPages, setTotalPages] = useState(0);
   const [loadMore, setLoadMore] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get("search");
+  const isQueryNonEmpty = query?.length > 0;
 
   useEffect(() => {
+    setMovies([]);
+  }, [searchParams, query]);
+  useEffect(() => {
+    let cancelRequest: any;
+
     setLoading(true);
     setError(null);
-    if (query !== "") {
-      axios.get(`${ENDPOINT_SEARCH}&query=${query}`).then((res) => {
-        console.log("res 1", query, res.data.results);
+    axios({
+      method: "GET",
+      url: isQueryNonEmpty
+        ? `${ENDPOINT_SEARCH}&query=${query}`
+        : ENDPOINT_DISCOVER,
+      cancelToken: new axios.CancelToken((c) => {
+        cancelRequest = c;
+      }),
+    })
+      .then((res) => {
+        // @ts-ignore
+        setMovies((prevState) => [...prevState, ...res.data.results]);
+        setTotalPages(res.data.total_pages);
+        setLoadMore(res.data.page < totalPages);
+        setLoading(false);
+      })
+      .catch((e) => {
+        if (axios.isCancel(e)) {
+          return;
+        } else {
+          setError(e);
+        }
+      });
+    setSearchParams(
+      isQueryNonEmpty ? createSearchParams({ search: query }) : undefined
+    );
 
-        setMovies(res.data.results);
-        setTotalPages(res.data.total_pages);
-        setLoading(false);
-      });
-      setSearchParams(createSearchParams({ search: query }));
-    } else {
-      axios.get(ENDPOINT_DISCOVER).then((res) => {
-        console.log("res 2", res);
-        setMovies(res.data.results);
-        setTotalPages(res.data.total_pages);
-        setLoading(false);
-      });
-      setSearchParams();
-    }
+    return () => cancelRequest();
   }, [query, page]);
-  return [movies];
+  return { movies, isLoading, loadMore, error };
 };

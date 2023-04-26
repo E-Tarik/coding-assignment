@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Routes, Route, useNavigate, useSearchParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 import { ENDPOINT, API_KEY } from "./constants";
 import { Header } from "./components/Header";
@@ -8,7 +7,6 @@ import { Movies } from "./components/Movies";
 import { Starred } from "./components/Starred";
 import { WatchLater } from "./components/WatchLater";
 import { YouTubePlayerModal } from "./components/YoutubePlayer";
-import { moviesSelector } from "./data/selector";
 
 import "reactjs-popup/dist/index.css";
 import "./app.scss";
@@ -17,18 +15,37 @@ import { useSearch } from "./utils/hooks";
 export const App = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const searchQuery = searchParams.get("query");
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState(searchQuery || "");
   const [videoKey, setVideoKey] = useState(null);
   const [isOpen, setOpen] = useState(false);
-  const [movies] = useSearch(searchParams.get("query"));
+  const { movies, isLoading, error, loadMore } = useSearch(query, page);
+  const observer = useRef();
+  console.log("query", query, "isLoading", isLoading);
+
   useEffect(() => {
-    // getSearchResults();
     return () => {
       setVideoKey(null);
       setOpen(false);
     };
   }, [setVideoKey, setOpen]);
 
+  const lastMovieElementRef = useCallback(
+    (node) => {
+      console.log("node", node);
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        console.log("entries", entries);
+        if (entries[0].isIntersecting && loadMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [movies]
+  );
   const closeModal = () => {
     setVideoKey(null);
     setOpen(false);
@@ -36,7 +53,9 @@ export const App = () => {
 
   const searchMovies = (query) => {
     navigate("/");
-    // todo searh movies
+    setQuery(query);
+    setPage(1);
+    // setSearchParams({ query });
   };
 
   const viewTrailer = (movie) => {
@@ -89,6 +108,8 @@ export const App = () => {
                 movies={movies}
                 viewTrailer={viewTrailer}
                 closeCard={closeModal}
+                isLoading={isLoading}
+                lastRef={movies.length && lastMovieElementRef}
               />
             }
           />
