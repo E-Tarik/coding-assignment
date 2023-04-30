@@ -5,15 +5,15 @@ import watchLaterSlice from "../data/watchLaterSlice";
 import placeholder from "../assets/not-found-500X750.jpeg";
 import { starredMoviesSelector, watchLaterSelector } from "../data/selector";
 import { getMovieMetadata } from "../utils/utils";
+import { forwardRef } from "react";
 
-const Movie = ({ movie, viewTrailer }) => {
+const Movie = forwardRef(({ movie, viewTrailer }, ref) => {
   const dispatch = useDispatch();
   const starred = useSelector(starredMoviesSelector);
   const watchLater = useSelector(watchLaterSelector);
   const metadata = getMovieMetadata(movie);
   const isInStarred = starred.map((movie) => movie.id).includes(movie.id);
   const isInWatchLater = watchLater.map((movie) => movie.id).includes(movie.id);
-
   const { starMovie, unstarMovie } = starredSlice.actions;
 
   const { addToWatchLater, removeFromWatchLater } = watchLaterSlice.actions;
@@ -36,7 +36,10 @@ const Movie = ({ movie, viewTrailer }) => {
   };
 
   return (
-    <div className="wrapper col-3 col-sm-4 col-md-3 col-lg-3 col-xl-2">
+    <div
+      className="wrapper col-3 col-sm-4 col-md-3 col-lg-3 col-xl-2"
+      ref={ref}
+    >
       <div className="card" onClick={handleOpenMovieCard}>
         <div className="card-body text-center">
           <div className="overlay" />
@@ -111,6 +114,6 @@ const Movie = ({ movie, viewTrailer }) => {
       </div>
     </div>
   );
-};
+});
 
 export default Movie;

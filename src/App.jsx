@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, createRef } from "react";
 import { Routes, Route, useNavigate, useSearchParams } from "react-router-dom";
 
 import { ENDPOINT, API_KEY } from "./constants";
 import { Header } from "./components/Header";
-import { Movies } from "./components/Movies";
 import { Starred } from "./components/Starred";
 import { WatchLater } from "./components/WatchLater";
 import { YouTubePlayerModal } from "./components/YoutubePlayer";
@@ -11,6 +10,7 @@ import { YouTubePlayerModal } from "./components/YoutubePlayer";
 import "reactjs-popup/dist/index.css";
 import "./app.scss";
 import { useSearch } from "./utils/hooks";
+import Movie from "./components/Movie";
 
 export const App = () => {
   const navigate = useNavigate();
@@ -22,7 +22,6 @@ export const App = () => {
   const [isOpen, setOpen] = useState(false);
   const { movies, isLoading, error, loadMore } = useSearch(query, page);
   const observer = useRef();
-  console.log("query", query, "isLoading", isLoading);
 
   useEffect(() => {
     return () => {
@@ -31,21 +30,22 @@ export const App = () => {
     };
   }, [setVideoKey, setOpen]);
 
-  const lastMovieElementRef = useCallback(
-    (node) => {
-      console.log("node", node);
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        console.log("entries", entries);
-        if (entries[0].isIntersecting && loadMore) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [movies]
-  );
+  const lastMovieElementRef = useCallback((node) => {
+    if (isLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      console.log(
+        "entries[0].isIntersecting",
+        entries[0].isIntersecting,
+        page,
+        loadMore
+      );
+      if (entries[0].isIntersecting && loadMore) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, []);
   const closeModal = () => {
     setVideoKey(null);
     setOpen(false);
@@ -59,7 +59,7 @@ export const App = () => {
   };
 
   const viewTrailer = (movie) => {
-    console.log("open modal for", movie.title, movie);
+    // console.log("open modal for", movie.title, movie);
     loadTrailer(movie.id)
       // what
       .then(() => setOpen(true))
@@ -104,13 +104,30 @@ export const App = () => {
           <Route
             path="/"
             element={
-              <Movies
-                movies={movies}
-                viewTrailer={viewTrailer}
-                closeCard={closeModal}
-                isLoading={isLoading}
-                lastRef={movies.length && lastMovieElementRef}
-              />
+              <div data-testid="movies" className="movies">
+                {movies?.map((movie, index) => {
+                  if (index + 1 === movies.length) {
+                    console.log("ref must be", movie.title);
+                    return (
+                      <Movie
+                        key={movie.id}
+                        ref={lastMovieElementRef}
+                        movie={movie}
+                        viewTrailer={viewTrailer}
+                      />
+                    );
+                  } else {
+                    return (
+                      <Movie
+                        key={movie.id}
+                        movie={movie}
+                        viewTrailer={viewTrailer}
+                      />
+                    );
+                  }
+                })}
+                {isLoading && <div className="spinner-border" role="status" />}
+              </div>
             }
           />
           <Route
