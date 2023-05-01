@@ -7,7 +7,7 @@ import { starredMoviesSelector, watchLaterSelector } from "../data/selector";
 import { getMovieMetadata } from "../utils/utils";
 import { forwardRef } from "react";
 
-const Movie = forwardRef(({ movie, viewTrailer }, ref) => {
+export const Movie = forwardRef(({ movie, viewTrailer }, ref) => {
   const dispatch = useDispatch();
   const starred = useSelector(starredMoviesSelector);
   const watchLater = useSelector(watchLaterSelector);
@@ -116,4 +116,4 @@ const Movie = forwardRef(({ movie, viewTrailer }, ref) => {
   );
 });
 
-export default Movie;
+// export default Movie;

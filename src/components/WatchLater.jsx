@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import watchLaterSlice from "../data/watchLaterSlice";
-import Movie from "./Movie";
+import { Movie } from "./Movie";
 
 import { watchLaterSelector } from "../data/selector";
 

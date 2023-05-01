@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useRef, useState, createRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Routes, Route, useNavigate, useSearchParams } from "react-router-dom";
 
-import { ENDPOINT, API_KEY } from "./constants";
 import { Header } from "./components/Header";
 import { Starred } from "./components/Starred";
 import { WatchLater } from "./components/WatchLater";
@@ -10,7 +9,8 @@ import { YouTubePlayerModal } from "./components/YoutubePlayer";
 import "reactjs-popup/dist/index.css";
 import "./app.scss";
 import { useSearch } from "./utils/hooks";
-import Movie from "./components/Movie";
+import { loadTrailer } from "./utils/utils";
+import { Movie } from "./components/Movie";
 
 export const App = () => {
   const navigate = useNavigate();
@@ -32,6 +32,8 @@ export const App = () => {
 
   const lastMovieElementRef = useCallback(
     (node) => {
+      console.log("node=", node);
+
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
@@ -53,35 +55,12 @@ export const App = () => {
     navigate("/");
     setQuery(query);
     setPage(1);
-    // setSearchParams({ query });
   };
 
   const viewTrailer = (movie) => {
-    // console.log("open modal for", movie.title, movie);
-    loadTrailer(movie.id)
-      // what
+    loadTrailer(setVideoKey, movie.id)
       .then(() => setOpen(true))
       .catch((error) => console.log(error));
-  };
-
-  const loadTrailer = async (id) => {
-    // todo move to separate file
-    const URL = `${ENDPOINT}/movie/${id}?api_key=${API_KEY}&append_to_response=videos`;
-
-    setVideoKey(null);
-    await fetch(URL)
-      .then((response) => response.json())
-      .then((videoData) => {
-        const { videos } = videoData;
-        if (videos?.results.length) {
-          const trailer = videos.results.find((vid) => vid.type === "Trailer");
-          setVideoKey(trailer ? trailer.key : videos.results[0].key);
-        }
-      })
-      .catch((error) =>
-        // todo show error message in UI
-        console.log(error)
-      );
   };
 
   return (
@@ -102,31 +81,45 @@ export const App = () => {
           <Route
             path="/"
             element={
-              <div data-testid="movies" className="movies">
-                {movies?.map((movie, index) => {
-                  if (index + 1 === movies.length) {
-                    // console.log("ref must be", movie.title);
-                    return (
-                      <Movie
-                        key={movie.id}
-                        ref={lastMovieElementRef}
-                        movie={movie}
-                        viewTrailer={viewTrailer}
-                      />
-                    );
-                  } else {
-                    return (
-                      <Movie
-                        key={movie.id}
-                        movie={movie}
-                        viewTrailer={viewTrailer}
-                      />
-                    );
-                  }
-                })}
-                {isLoading && <div className="spinner-border" role="status" />}
-                {!loadMore && <div className="divider">End of list</div>}
-              </div>
+              <>
+                <div data-testid="movies" className="movies">
+                  {movies?.map((movie, index) => {
+                    if (index + 1 === movies.length) {
+                      return (
+                        <Movie
+                          key={movie.id}
+                          ref={lastMovieElementRef}
+                          movie={movie}
+                          viewTrailer={viewTrailer}
+                        />
+                      );
+                    } else {
+                      return (
+                        <Movie
+                          key={movie.id}
+                          movie={movie}
+                          viewTrailer={viewTrailer}
+                        />
+                      );
+                    }
+                  })}
+                  {isLoading && (
+                    <div className="spinner-border" role="status" />
+                  )}
+                  {!loadMore && !isLoading && (
+                    <div className="divider">End of list</div>
+                  )}
+                  {!isLoading && error && (
+                    <button
+                      className="reload"
+                      hint="Loading error"
+                      onClick={() => setQuery(query + "")}
+                    >
+                      Try again
+                    </button>
+                  )}
+                </div>
+              </>
             }
           />
           <Route
