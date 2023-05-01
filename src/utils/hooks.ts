@@ -5,11 +5,9 @@ import axios from "axios";
 import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from "../constants";
 
 export const useSearch = (query: string, page = 1) => {
-  console.log("useSearch", query, page);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [movies, setMovies] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
   const [loadMore, setLoadMore] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const isQueryNonEmpty = query?.length > 0;
@@ -34,8 +32,8 @@ export const useSearch = (query: string, page = 1) => {
       .then((res) => {
         // @ts-ignore
         setMovies((prevState) => [...prevState, ...res.data.results]);
-        setTotalPages(res.data.total_pages);
-        setLoadMore(res.data.page < totalPages);
+        const totalPagesRes = res.data.total_pages;
+        setLoadMore(res.data.page < totalPagesRes);
         setLoading(false);
       })
       .catch((e) => {

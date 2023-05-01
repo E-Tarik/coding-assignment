@@ -30,22 +30,20 @@ export const App = () => {
     };
   }, [setVideoKey, setOpen]);
 
-  const lastMovieElementRef = useCallback((node) => {
-    if (isLoading) return;
-    if (observer.current) observer.current.disconnect();
-    observer.current = new IntersectionObserver((entries) => {
-      console.log(
-        "entries[0].isIntersecting",
-        entries[0].isIntersecting,
-        page,
-        loadMore
-      );
-      if (entries[0].isIntersecting && loadMore) {
-        setPage((prevPage) => prevPage + 1);
-      }
-    });
-    if (node) observer.current.observe(node);
-  }, []);
+  const lastMovieElementRef = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && loadMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loadMore]
+  );
+
   const closeModal = () => {
     setVideoKey(null);
     setOpen(false);
@@ -107,7 +105,7 @@ export const App = () => {
               <div data-testid="movies" className="movies">
                 {movies?.map((movie, index) => {
                   if (index + 1 === movies.length) {
-                    console.log("ref must be", movie.title);
+                    // console.log("ref must be", movie.title);
                     return (
                       <Movie
                         key={movie.id}
@@ -127,6 +125,7 @@ export const App = () => {
                   }
                 })}
                 {isLoading && <div className="spinner-border" role="status" />}
+                {!loadMore && <div className="divider">End of list</div>}
               </div>
             }
           />
