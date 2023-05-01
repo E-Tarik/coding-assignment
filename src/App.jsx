@@ -5,12 +5,13 @@ import { Header } from "./components/Header";
 import { Starred } from "./components/Starred";
 import { WatchLater } from "./components/WatchLater";
 import { YouTubePlayerModal } from "./components/YoutubePlayer";
+import { Movie } from "./components/Movie";
+
+import { useSearch } from "./utils/hooks";
+import { loadTrailer } from "./utils/utils";
 
 import "reactjs-popup/dist/index.css";
 import "./app.scss";
-import { useSearch } from "./utils/hooks";
-import { loadTrailer } from "./utils/utils";
-import { Movie } from "./components/Movie";
 
 export const App = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export const App = () => {
   const [query, setQuery] = useState(searchQuery || "");
   const [videoKey, setVideoKey] = useState(null);
   const [isOpen, setOpen] = useState(false);
-  const { movies, isLoading, error, loadMore } = useSearch(query, page);
+  const { movies, isLoading, hasError, loadMore } = useSearch(query, page);
   const observer = useRef();
 
   useEffect(() => {
@@ -61,6 +62,11 @@ export const App = () => {
     loadTrailer(setVideoKey, movie.id)
       .then(() => setOpen(true))
       .catch((error) => console.log(error));
+  };
+
+  const resetSearch = () => {
+    setQuery(null);
+    setQuery(query);
   };
 
   return (
@@ -109,11 +115,11 @@ export const App = () => {
                   {!loadMore && !isLoading && (
                     <div className="divider">End of list</div>
                   )}
-                  {!isLoading && error && (
+                  {!isLoading && hasError && (
                     <button
                       className="reload"
                       hint="Loading error"
-                      onClick={() => setQuery(query + "")}
+                      onClick={() => resetSearch()}
                     >
                       Try again
                     </button>

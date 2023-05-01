@@ -5,8 +5,9 @@ import axios from "axios";
 import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from "../constants";
 
 export const useSearch = (query: string, page = 1) => {
+  // console.log("usesearch", query, page);
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [hasError, setHasError] = useState(false);
   const [movies, setMovies] = useState([]);
   const [loadMore, setLoadMore] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,7 +20,7 @@ export const useSearch = (query: string, page = 1) => {
     let cancelRequest: any;
 
     setLoading(true);
-    setError(null);
+    setHasError(false);
     axios({
       method: "GET",
       url: isQueryNonEmpty
@@ -28,6 +29,7 @@ export const useSearch = (query: string, page = 1) => {
       cancelToken: new axios.CancelToken((c) => {
         cancelRequest = c;
       }),
+      timeout: 5000,
     })
       .then((res) => {
         // @ts-ignore
@@ -40,7 +42,8 @@ export const useSearch = (query: string, page = 1) => {
         if (axios.isCancel(e)) {
           return;
         } else {
-          setError(e);
+          setLoading(false);
+          setHasError(true);
         }
       });
     setSearchParams(
@@ -49,5 +52,5 @@ export const useSearch = (query: string, page = 1) => {
 
     return () => cancelRequest();
   }, [query, page]);
-  return { movies, isLoading, loadMore, error };
+  return { movies, isLoading, loadMore, hasError };
 };
