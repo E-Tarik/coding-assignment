@@ -3,6 +3,16 @@ import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from './utils';
 import App from '../App';
 
+beforeEach(() => {
+  const mockIntersectionObserver = jest.fn();
+  mockIntersectionObserver.mockReturnValue({
+    observe: () => null,
+    unobserve: () => null,
+    disconnect: () => null,
+  });
+  window.IntersectionObserver = mockIntersectionObserver;
+});
+
 it('Watch Later movies page', async () => {
   renderWithProviders(<App />);
 
@@ -18,10 +28,4 @@ it('Watch Later movies page', async () => {
     expect(watchLaterLink).toBeInTheDocument();
   });
   await userEvent.click(watchLaterLink);
-
-  // const watchLaterink = screen.getByTestId('watch-later-div')
-  // await waitFor(() => {
-  //     expect(watchLaterink).toBeInTheDocument()
-  // })
-  // await userEvent.click(watchLaterink)
 });

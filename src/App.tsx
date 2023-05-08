@@ -68,12 +68,14 @@ const App = () => {
     if (!node) return;
     if (movies.fetchStatus === 'loading') return;
     if (observer.current) observer?.current?.disconnect();
+
     observer!.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         handleGetMovies();
         currPage++;
       }
     });
+
     observer?.current.observe(node);
   }, []);
 
@@ -129,6 +131,8 @@ const App = () => {
           />
         </Routes>
       </div>
+
+      <div id='modal-root'></div>
     </div>
   );
 };

@@ -21,14 +21,14 @@ describe('starredSlice test', () => {
   it('should remove movie from starred', () => {
     const initialState = { ...state, starredMovies: moviesMock };
     const action = starredSlice.actions.unstarMovie(moviesMock[0]);
-    const result = starredSlice.reducer(initialState, action);
+    const result = starredSlice.reducer(initialState , action);
     expect(result.starredMovies[0]).toBe(moviesMock[1]);
   });
 
   it('should remove all movies', () => {
     const initialState = { ...state, starredMovies: moviesMock };
-    const action = starredSlice.actions.clearAllStarred(state);
-    const result = starredSlice.reducer(initialState, action);
+    const action = starredSlice.actions.clearAllStarred(state );
+    const result = starredSlice.reducer(initialState , action);
     expect(Object.keys(result.starredMovies).length).toEqual(0);
   });
 });

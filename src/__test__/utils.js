@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
@@ -26,6 +26,14 @@ export function renderWithProviders(
   setupListeners(store.dispatch);
 
   function Wrapper({ children }) {
+    const mockIntersectionObserver = jest.fn();
+    mockIntersectionObserver.mockReturnValue({
+      observe: () => null,
+      unobserve: () => null,
+      disconnect: () => null,
+    });
+    window.IntersectionObserver = mockIntersectionObserver;
+
     return (
       <Provider store={store}>
         <BrowserRouter>{children}</BrowserRouter>

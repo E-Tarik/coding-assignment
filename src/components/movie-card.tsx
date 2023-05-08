@@ -128,52 +128,49 @@ const Movie = ({ movie }: Props) => {
   };
 
   return (
-    <div className='wrapper col-3 col-sm-4 col-md-3 col-lg-3 col-xl-2'>
-      <div
-        className={clsx('card', {
-          ['opened']: cardOpened,
-        })}
-        // onClick={(e) => e.currentTarget.classList.add('opened')}
-        onClick={() => setCardOpened(true)}
-      >
-        <div className='card-body text-center'>
-          <div className='overlay' />
-          <div className='info_panel'>
-            <div className='overview'>{movie.overview}</div>
-            <div className='year'>{movie.release_date?.substring(0, 4)}</div>
+    <div
+      className={clsx('card', {
+        ['opened']: cardOpened,
+      })}
+      onClick={() => setCardOpened(true)}
+    >
+      <div className='card-body text-center'>
+        <div className='overlay' />
+        <div className='info_panel'>
+          <div className='overview'>{movie.overview}</div>
+          <div className='year'>{movie.release_date?.substring(0, 4)}</div>
 
-            {renderStartButton()}
-            {renderWatchLaterButton()}
+          {renderStartButton()}
+          {renderWatchLaterButton()}
 
-            <button
-              type='button'
-              className='btn btn-dark'
-              onClick={() => handleGetMovie()}
-            >
-              View Trailer
-            </button>
-          </div>
-          <img
-            className='center-block'
-            src={
-              movie.poster_path
-                ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-                : 'assets/not-found-500X750.jpeg'
-            }
-            alt='Movie poster'
-          />
+          <button
+            type='button'
+            className='btn btn-dark'
+            onClick={() => handleGetMovie()}
+          >
+            View Trailer
+          </button>
         </div>
-        <h6 className='title mobile-card'>{movie.title}</h6>
-        <h6 className='title'>{movie.title}</h6>
-        <button
-          type='button'
-          className='close'
-          onClick={(e) => handleClickCloseButton(e)}
-          aria-label='Close'
-        >
-          <span aria-hidden='true'>&times;</span>
-        </button>
+        <img
+          className='center-block'
+          src={
+            movie.poster_path
+              ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+              : 'assets/not-found-500X750.jpeg'
+          }
+          alt='Movie poster'
+        />
       </div>
+      <h6 className='title mobile-card'>{movie.title}</h6>
+      <h6 className='title'>{movie.title}</h6>
+      <button
+        type='button'
+        className='close'
+        onClick={(e) => handleClickCloseButton(e)}
+        aria-label='Close'
+      >
+        <span aria-hidden='true'>&times;</span>
+      </button>
 
       <Modal visible={visibleModal} onClose={handleHideModal}>
         <YouTubePlayer videoKey={videoKey} />

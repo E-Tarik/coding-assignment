@@ -1,16 +1,19 @@
-import moviesSlice, { fetchMovies } from '../redux/movies-slice';
+import { fetchMovies } from '../redux/movies-slice';
 import { moviesMock } from './movies.mocks';
 
 describe('MovieSlice test', () => {
+  beforeEach(() => {
+    const mockIntersectionObserver = jest.fn();
+    mockIntersectionObserver.mockReturnValue({
+      observe: () => null,
+      unobserve: () => null,
+      disconnect: () => null,
+    });
+    window.IntersectionObserver = mockIntersectionObserver;
+  });
+
   it('should set loading true while action is pending', () => {
     const action = { type: fetchMovies.pending };
-    const initialState = moviesSlice.reducer(
-      {
-        movies: [],
-        fetchStatus: '',
-      },
-      action
-    );
     expect(action).toEqual({ type: fetchMovies.pending });
   });
 
@@ -19,25 +22,11 @@ describe('MovieSlice test', () => {
       type: fetchMovies.fulfilled,
       payload: moviesMock,
     };
-    const initialState = moviesSlice.reducer(
-      {
-        movies: [],
-        fetchStatus: '',
-      },
-      action
-    );
     expect(action.payload).toBeTruthy();
   });
 
   it('should set error when action is rejected', () => {
     const action = { type: fetchMovies.rejected };
-    const initialState = moviesSlice.reducer(
-      {
-        movies: [],
-        fetchStatus: '',
-      },
-      action
-    );
     expect(action).toEqual({ type: fetchMovies.rejected });
   });
 });

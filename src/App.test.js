@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from './test/utils';
+import { renderWithProviders } from './__test__/utils';
 import App from './App';
 
 it('renders watch later link', () => {
@@ -12,7 +12,7 @@ it('renders watch later link', () => {
 it('search for movies', async () => {
   renderWithProviders(<App />);
   await userEvent.type(screen.getByTestId('search-movies'), 'forrest gump');
-  // @TODO
+  // // @TODO
   await waitFor(() => {
     expect(
       screen.getAllByText('Through the Eyes of Forrest Gump')[0]
