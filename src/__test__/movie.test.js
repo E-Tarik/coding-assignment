@@ -15,7 +15,6 @@ it('movies starred and saved to watch later', async () => {
   renderWithProviders(<App />);
 
   await userEvent.type(screen.getByTestId('search-movies'), 'forrest gump');
-  // @TODO
   await waitFor(() => {
     expect(
       screen.getAllByText('Through the Eyes of Forrest Gump')[0]

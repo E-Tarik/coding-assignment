@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { MovieItemModel } from 'models';
+import { findMovieItem } from './utils';
 
 const starredSlice = createSlice({
   name: 'starred',
@@ -13,9 +14,7 @@ const starredSlice = createSlice({
     },
 
     unstarMovie: (state, action) => {
-      const indexOfId = state.starredMovies.findIndex(
-        (key) => key.id === action.payload.id
-      );
+      const indexOfId = findMovieItem(state.starredMovies, action.payload.id);
       state.starredMovies.splice(indexOfId, 1);
     },
 

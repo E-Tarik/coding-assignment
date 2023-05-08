@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { MovieItemModel } from 'models';
+import { findMovieItem } from './utils';
 
 const watchLaterSlice = createSlice({
   name: 'watch-later',
@@ -13,12 +14,13 @@ const watchLaterSlice = createSlice({
     },
 
     removeFromWatchLater: (state, action) => {
-      const indexOfId = state.watchLaterMovies.findIndex(
-        (key) => key.id === action.payload.id
+      const indexOfId = findMovieItem(
+        state.watchLaterMovies,
+        action.payload.id
       );
       state.watchLaterMovies.splice(indexOfId, 1);
     },
-    
+
     removeAllWatchLater: (state) => {
       state.watchLaterMovies = [];
     },
