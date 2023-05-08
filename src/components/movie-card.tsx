@@ -130,7 +130,7 @@ const Movie = ({ movie }: Props) => {
   return (
     <div
       className={clsx('card', {
-        ['opened']: cardOpened,
+        opened: cardOpened,
       })}
       onClick={() => setCardOpened(true)}
     >

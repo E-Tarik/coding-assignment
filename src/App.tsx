@@ -81,11 +81,7 @@ const App = () => {
 
   return (
     <div className='App'>
-      <Header
-        // searchParams={searchParams}
-        // setSearchParams={setSearchParams}
-        searchMovies={handleSearchMovies}
-      />
+      <Header searchMovies={handleSearchMovies} />
 
       <div className='container'>
         <Routes>
@@ -94,21 +90,6 @@ const App = () => {
             element={
               <>
                 <MoviesPage movies={movies} />
-                {/* <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                    {movies?.movies.results?.map((movie, index) => (
-                      <div
-                        className='wrapper col-3 col-sm-4 col-md-3 col-lg-3 col-xl-2'
-                        key={movie.id}
-                        ref={
-                          index === movies?.movies?.results.length - 1
-                            ? handleLoadMoreMovie
-                            : null
-                        }
-                      >
-                        <MovieCard movie={movie} />
-                      </div>
-                    ))}
-                  </div> */}
 
                 {movies.fetchStatus !== 'loading' && (
                   <div ref={handleLoadMoreMovie}></div>

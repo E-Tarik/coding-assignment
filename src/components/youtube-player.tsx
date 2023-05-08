@@ -1,9 +1,13 @@
 import ReactPlayer from 'react-player';
 
-const YoutubePlayer = ({ videoKey }) => (
+type Props = {
+  videoKey: string | null;
+};
+
+const YoutubePlayer = ({ videoKey }: Props) => (
   <ReactPlayer
     width='100%'
-    height='520px'
+    // height='520px'
     className='video-player'
     url={`https://www.youtube.com/watch?v=${videoKey}`}
     controls={true}

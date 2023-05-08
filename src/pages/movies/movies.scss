@@ -6,6 +6,18 @@
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 20px;
+
+    @media only screen and (max-width: 1024px) {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    @media only screen and (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media only screen and (max-width: 480px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
   }
 
   @media (max-width: 720px) {
@@ -252,7 +264,7 @@
       position: fixed;
       top: 0;
       left: 0;
-      z-index: 999;
+      z-index: 10;
       width: 100%;
       height: auto;
       border: 3px solid #fff;
