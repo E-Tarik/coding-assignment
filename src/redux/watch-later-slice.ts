@@ -1,22 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { MovieItemModel } from 'models';
+
 const watchLaterSlice = createSlice({
   name: 'watch-later',
   initialState: {
-    watchLaterMovies: [],
+    watchLaterMovies: [] as MovieItemModel[],
   },
   reducers: {
     addToWatchLater: (state, action) => {
       state.watchLaterMovies = [action.payload, ...state.watchLaterMovies];
     },
-    // @TODO
+
     removeFromWatchLater: (state, action) => {
       const indexOfId = state.watchLaterMovies.findIndex(
         (key) => key.id === action.payload.id
       );
       state.watchLaterMovies.splice(indexOfId, 1);
     },
-    remveAllWatchLater: (state) => {
+    
+    removeAllWatchLater: (state) => {
       state.watchLaterMovies = [];
     },
   },

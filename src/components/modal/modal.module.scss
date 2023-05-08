@@ -1,0 +1,44 @@
+.ModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+  transition: all ease 0.2s;
+  z-index: 11;
+}
+
+.ModalContainer {
+  background: #000;
+  width: 830px;
+  height: fit-content;
+  border-radius: 15px;
+  margin: 20px 0;
+  position: relative;
+
+  .ModalCloseButton {
+    position: absolute;
+    right: -22px;
+    top: -22px;
+    border: 0;
+    outline: none;
+    color: #000;
+    width: 40px;
+    height: 40px;
+    font-size: 27px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.ModalBody {
+  padding-top: 10px;
+}
