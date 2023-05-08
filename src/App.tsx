@@ -7,6 +7,7 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import debounce from 'lodash.debounce';
 
 import moviesSlice, { fetchMovies } from 'redux/movies-slice';
 import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER } from './constants';
@@ -46,7 +47,9 @@ const App = () => {
     }
   };
 
-  const handleGetSearchResults = (query: string) => {
+  const handleSearchMovies = (query: string) => {
+    navigate('/');
+
     if (!query) {
       setSearchParams();
       dispatch(removeAllMovies());
@@ -56,13 +59,14 @@ const App = () => {
       dispatch(removeAllMovies());
       dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=${query}&page=1`) as any);
     }
-  };
 
-  const handleSearchMovies = (query: string) => {
-    navigate('/');
-    handleGetSearchResults(query);
     currPage = 1;
   };
+
+  const handleSearchWithDebounce = useCallback(
+    debounce(handleSearchMovies, 300),
+    []
+  );
 
   const handleLoadMoreMovie = useCallback((node: HTMLDivElement) => {
     if (!node) return;
@@ -81,7 +85,7 @@ const App = () => {
 
   return (
     <div className='App'>
-      <Header searchMovies={handleSearchMovies} />
+      <Header searchMovies={handleSearchWithDebounce} />
 
       <div className='container'>
         <Routes>
