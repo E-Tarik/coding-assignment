@@ -1,14 +1,39 @@
+import { ChangeEvent, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+
+import { moviesSelector } from 'redux/selectors';
 
 import './header.scss';
 
-const Header = ({ searchMovies }) => {
-  const { starredMovies } = useSelector((state) => state.starred);
+type Props = {
+  searchMovies: (val: string) => void;
+};
+
+const Header = ({ searchMovies }: Props) => {
+  const { pathname } = useLocation();
+  const favorites = useSelector(moviesSelector.selectFavorites);
+
+  const [value, setValue] = useState<string>('');
+
+  const handleChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setValue(value);
+    searchMovies(value);
+  };
+
+  const handleClickHomeLink = () => {
+    setValue('');
+
+    if (pathname !== '/watch-later' && pathname !== '/starred') {
+      searchMovies('');
+    }
+  };
 
   return (
     <header>
-      <Link to='/' data-testid='home' onClick={() => searchMovies(null)}>
+      <Link to='/' data-testid='home' onClick={handleClickHomeLink}>
         <i className='bi bi-film' />
       </Link>
 
@@ -18,10 +43,10 @@ const Header = ({ searchMovies }) => {
           data-testid='nav-starred'
           className='nav-starred'
         >
-          {starredMovies.length > 0 ? (
+          {favorites.length > 0 ? (
             <>
               <i className='bi bi-star-fill bi-star-fill-white' />
-              <sup className='star-number'>{starredMovies.length}</sup>
+              <sup className='star-number'>{favorites.length}</sup>
             </>
           ) : (
             <i className='bi bi-star' />
@@ -36,11 +61,12 @@ const Header = ({ searchMovies }) => {
         <input
           type='search'
           data-testid='search-movies'
-          onKeyUp={(e) => searchMovies(e.target.value)}
           className='form-control rounded'
           placeholder='Search movies...'
           aria-label='Search movies'
           aria-describedby='search-addon'
+          value={value}
+          onChange={(e) => handleChangeInput(e)}
         />
       </div>
     </header>

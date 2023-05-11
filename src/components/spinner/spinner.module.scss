@@ -11,12 +11,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 150px;
+  height: 250px;
 }
 
 .loader {
   border: 0.2em solid rgba(0, 0, 0, 0.1);
-  border-top: 0.2em solid #767676;
+  border-top: 0.2em solid #fff;
   border-radius: 50%;
   width: 30px;
   height: 30px;

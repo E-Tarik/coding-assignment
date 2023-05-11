@@ -1,27 +1,34 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import watchLaterSlice from '../../redux/watch-later-slice';
-import starredSlice from '../../redux/starred-slice';
-import { MovieCard } from '../../components';
+
+import { MovieCard } from 'components';
+import { useAppDispatch } from 'hooks';
+import {
+  removeAllFavorites,
+  removeAllWatchLater as removeAllWatchLaterList,
+} from 'redux/slices/movies-slice';
+import { moviesSelector } from 'redux/selectors';
 
 import './tagged.scss';
 
-const TaggedPage = ({ pageType }) => {
-  const dispatch = useDispatch();
-  const state = useSelector((state) => state);
-  const { watchLater, starred } = state;
+type Props = {
+  pageType: string;
+};
 
-  const { removeAllWatchLater } = watchLaterSlice.actions;
-  const { clearAllStarred } = starredSlice.actions;
+const TaggedPage = ({ pageType }: Props) => {
+  const appDispatch = useAppDispatch();
+
+  const favorites = useSelector(moviesSelector.selectFavorites);
+  const watchLater = useSelector(moviesSelector.selectWatchLater);
 
   if (pageType === 'starred') {
     return (
       <div className='starred' data-testid='starred'>
-        {starred.starredMovies.length > 0 && (
+        {favorites.length > 0 && (
           <div data-testid='starred-movies' className='starred-movies'>
             <h6 className='header'>Starred movies</h6>
-            <div className='row'>
-              {starred.starredMovies.map((movie) => (
+            <div className='movies-list'>
+              {favorites.map((movie: any) => (
                 <MovieCard movie={movie} key={movie.id} />
               ))}
             </div>
@@ -29,7 +36,9 @@ const TaggedPage = ({ pageType }) => {
             <footer className='text-center'>
               <button
                 className='btn btn-primary'
-                onClick={() => dispatch(clearAllStarred())}
+                onClick={() => {
+                  appDispatch(removeAllFavorites());
+                }}
               >
                 Remove all starred
               </button>
@@ -37,7 +46,7 @@ const TaggedPage = ({ pageType }) => {
           </div>
         )}
 
-        {starred.starredMovies.length === 0 && (
+        {favorites.length === 0 && (
           <div className='text-center empty-cart'>
             <i className='bi bi-star' />
             <p>There are no starred movies.</p>
@@ -52,11 +61,11 @@ const TaggedPage = ({ pageType }) => {
 
   return (
     <div className='starred' data-testid='watch-later-div'>
-      {watchLater.watchLaterMovies.length > 0 && (
+      {watchLater.length > 0 && (
         <div data-testid='watch-later-movies' className='starred-movies'>
           <h6 className='header'>Watch Later List</h6>
-          <div className='row'>
-            {watchLater.watchLaterMovies.map((movie) => (
+          <div className='movies-list'>
+            {watchLater.map((movie: any) => (
               <MovieCard movie={movie} key={movie.id} />
             ))}
           </div>
@@ -64,7 +73,9 @@ const TaggedPage = ({ pageType }) => {
           <footer className='text-center'>
             <button
               className='btn btn-primary'
-              onClick={() => dispatch(removeAllWatchLater())}
+              onClick={() => {
+                appDispatch(removeAllWatchLaterList());
+              }}
             >
               Empty list
             </button>
@@ -72,7 +83,7 @@ const TaggedPage = ({ pageType }) => {
         </div>
       )}
 
-      {watchLater.watchLaterMovies.length === 0 && (
+      {watchLater.length === 0 && (
         <div className='text-center empty-cart'>
           <i className='bi bi-heart' />
           <p>You have no movies saved to watch later.</p>

@@ -1,87 +1,65 @@
-import { useCallback, useEffect, useRef } from 'react';
+import 'styles/global.scss';
+
+import { useCallback, useRef, useState } from 'react';
 import {
   Routes,
   Route,
-  createSearchParams,
   useSearchParams,
+  createSearchParams,
   useNavigate,
 } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 
-import moviesSlice, { fetchMovies } from 'redux/movies-slice';
-import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER } from './constants';
-import { Header, Spinner } from 'components';
-import { MoviesPage, TaggedPage } from 'pages';
-import { StoreModel } from 'models';
-
-import './styles/global.scss';
+import { Header } from 'components';
+import { TaggedPage, MoviesPage } from 'pages';
+import { useAppDispatch, useMovies } from 'hooks';
+import { removeAllMovies } from 'redux/slices/movies-slice';
 
 const App = () => {
-  let currPage = 1;
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const observer = useRef<any>(null);
-
-  const state = useSelector((state: StoreModel) => state);
-  const { removeAllMovies } = moviesSlice.actions;
-  const { movies } = state;
+  const navigate = useNavigate();
 
   const searchQuery = searchParams.get('search');
+  const intObserver = useRef<any>(null);
 
-  useEffect(() => {
-    handleGetMovies();
-  }, []);
+  // Local states
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [searchValue, setSearchValue] = useState<string>(searchQuery ?? '');
 
-  const handleGetMovies = () => {
-    if (searchQuery) {
-      dispatch(
-        fetchMovies(
-          `${ENDPOINT_SEARCH}&query=${searchQuery}&page=${currPage}`
-        ) as any
-      );
-    } else {
-      dispatch(fetchMovies(`${ENDPOINT_DISCOVER}&page=${currPage}`) as any);
-    }
-  };
+  const { isLoading, hasNextPage } = useMovies(pageNum, searchValue);
 
-  const handleSearchMovies = (query: string) => {
-    navigate('/');
+  const lastMovieRef = useCallback(
+    (post: HTMLDivElement) => {
+      if (isLoading) return;
 
-    if (!query) {
-      setSearchParams();
-      dispatch(removeAllMovies());
-      dispatch(fetchMovies(`${ENDPOINT_DISCOVER}&page=1`) as any);
-    } else {
-      setSearchParams(createSearchParams({ search: query }));
-      dispatch(removeAllMovies());
-      dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=${query}&page=1`) as any);
-    }
+      if (intObserver.current) intObserver.current.disconnect();
 
-    currPage = 1;
-  };
+      intObserver.current = new IntersectionObserver((posts) => {
+        if (posts[0].isIntersecting && hasNextPage) {
+          setPageNum((prev) => prev + 1);
+        }
+      });
 
-  const handleSearchWithDebounce = useCallback(
-    debounce(handleSearchMovies, 300),
-    []
+      if (post) intObserver.current.observe(post);
+    },
+    [isLoading, hasNextPage]
   );
 
-  const handleLoadMoreMovie = useCallback((node: HTMLDivElement) => {
-    if (!node) return;
-    if (movies.fetchStatus === 'loading') return;
-    if (observer.current) observer?.current?.disconnect();
+  const handleSearch = (query: string) => {
+    navigate('/');
+    setPageNum(1);
+    dispatch(removeAllMovies());
+    setSearchValue(query);
 
-    observer!.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        handleGetMovies();
-        currPage++;
-      }
-    });
+    if (!!query) {
+      setSearchParams(createSearchParams({ search: query }));
+    } else {
+      setSearchParams();
+    }
+  };
 
-    observer?.current.observe(node);
-  }, []);
+  const handleSearchWithDebounce = debounce(handleSearch, 300);
 
   return (
     <div className='App'>
@@ -92,17 +70,11 @@ const App = () => {
           <Route
             path='/'
             element={
-              <>
-                <MoviesPage movies={movies} />
-
-                {movies.fetchStatus !== 'loading' && (
-                  <div ref={handleLoadMoreMovie}></div>
-                )}
-
-                <div style={{ height: '200px' }}>
-                  {movies.fetchStatus === 'loading' && <Spinner />}
-                </div>
-              </>
+              <MoviesPage
+                isLoading={isLoading}
+                hasNextPage={hasNextPage}
+                lastMovieRef={lastMovieRef}
+              />
             }
           />
           <Route path='/starred' element={<TaggedPage pageType='starred' />} />

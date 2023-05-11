@@ -4,9 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
-import moviesSlice from '../redux/movies-slice';
-import starredSlice from '../redux/starred-slice';
-import watchLaterSlice from '../redux/watch-later-slice';
+import moviesSlice from '../redux/slices/movies-slice';
 
 export function renderWithProviders(
   ui,
@@ -15,8 +13,6 @@ export function renderWithProviders(
     store = configureStore({
       reducer: {
         movies: moviesSlice.reducer,
-        starred: starredSlice.reducer,
-        watchLater: watchLaterSlice.reducer,
       },
       preloadedState,
     }),

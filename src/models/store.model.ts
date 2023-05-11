@@ -1,11 +1,10 @@
-import {
-  MoviesStateModel,
-  StarredMoviesStateModel,
-  WatchLaterMoviesStateModel,
-} from '.';
+import { MovieItemModel, ResponseModel } from '.';
 
+export interface NewMoviesStateModel {
+  all: ResponseModel<MovieItemModel[]>;
+  favorites: MovieItemModel[];
+  watchLater: MovieItemModel[];
+}
 export interface StoreModel {
-  movies: MoviesStateModel;
-  starred: StarredMoviesStateModel;
-  watchLater: WatchLaterMoviesStateModel;
+  movies: NewMoviesStateModel;
 }

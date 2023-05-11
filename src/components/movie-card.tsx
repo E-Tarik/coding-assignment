@@ -1,29 +1,33 @@
-import { MouseEvent, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { MouseEvent, useState, forwardRef } from 'react';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
-import starredSlice from 'redux/starred-slice';
-import watchLaterSlice from 'redux/watch-later-slice';
 import { ENDPOINT, API_KEY } from '../constants';
 import { Modal, YouTubePlayer } from 'components';
-import { MovieDetailsModel, MovieItemModel, StoreModel } from 'models';
+import { MovieDetailsModel, MovieItemModel } from 'models';
+import { useAppDispatch } from 'hooks';
+import {
+  addToFavorites,
+  removeFromFavorites,
+  addToWatchLater as addToWatchLaterList,
+  removeFromWatchLater as removeFromWatchLaterList,
+} from 'redux/slices/movies-slice';
+import { moviesSelector } from 'redux/selectors';
 
 type Props = {
   movie: MovieItemModel;
 };
 
-const Movie = ({ movie }: Props) => {
-  const state = useSelector((state: StoreModel) => state);
-  const { starred, watchLater } = state;
-  const { starMovie, unstarMovie } = starredSlice.actions;
-  const { addToWatchLater, removeFromWatchLater } = watchLaterSlice.actions;
+const Movie = forwardRef(({ movie }: Props, ref: any) => {
+  const favorites = useSelector(moviesSelector.selectFavorites);
+  const watchLater = useSelector(moviesSelector.selectWatchLater);
+
+  const dispatch = useAppDispatch();
 
   // Local States
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
   const [cardOpened, setCardOpened] = useState<boolean>(false);
   const [videoKey, setVideoKey] = useState<null | string>(null);
-
-  const dispatch = useDispatch();
 
   const handleGetMovie = async () => {
     const URL = `${ENDPOINT}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=videos`;
@@ -50,16 +54,16 @@ const Movie = ({ movie }: Props) => {
   };
 
   const renderStartButton = () => {
-    const isStarred = starred.starredMovies
-      .map((movie) => movie.id)
-      .includes(movie.id);
+    const isStarred = favorites.map((movie) => movie.id).includes(movie.id);
 
     if (isStarred) {
       return (
         <span
           className='btn-star'
           data-testid='unstar-link'
-          onClick={() => dispatch(unstarMovie(movie))}
+          onClick={() => {
+            dispatch(removeFromFavorites(movie));
+          }}
         >
           <i className='bi bi-star-fill' data-testid='star-fill' />
         </span>
@@ -70,17 +74,17 @@ const Movie = ({ movie }: Props) => {
       <span
         className='btn-star'
         data-testid='starred-link'
-        onClick={() =>
+        onClick={() => {
           dispatch(
-            starMovie({
+            addToFavorites({
               id: movie.id,
               overview: movie.overview,
               release_date: movie.release_date?.substring(0, 4),
               poster_path: movie.poster_path,
               title: movie.title,
             })
-          )
-        }
+          );
+        }}
       >
         <i className='bi bi-star' />
       </span>
@@ -88,7 +92,7 @@ const Movie = ({ movie }: Props) => {
   };
 
   const renderWatchLaterButton = () => {
-    const isInWatchList = watchLater.watchLaterMovies
+    const isInWatchList = watchLater
       .map((movie) => movie.id)
       .includes(movie.id);
 
@@ -98,7 +102,9 @@ const Movie = ({ movie }: Props) => {
           type='button'
           data-testid='remove-watch-later'
           className='btn btn-light btn-watch-later blue'
-          onClick={() => dispatch(removeFromWatchLater(movie))}
+          onClick={() => {
+            dispatch(removeFromWatchLaterList(movie));
+          }}
         >
           <i className='bi bi-check'></i>
         </button>
@@ -110,30 +116,25 @@ const Movie = ({ movie }: Props) => {
         type='button'
         data-testid='watch-later'
         className='btn btn-light btn-watch-later'
-        onClick={() =>
+        onClick={() => {
           dispatch(
-            addToWatchLater({
+            addToWatchLaterList({
               id: movie.id,
               overview: movie.overview,
               release_date: movie.release_date?.substring(0, 4),
               poster_path: movie.poster_path,
               title: movie.title,
             })
-          )
-        }
+          );
+        }}
       >
         Watch Later
       </button>
     );
   };
 
-  return (
-    <div
-      className={clsx('card', {
-        opened: cardOpened,
-      })}
-      onClick={() => setCardOpened(true)}
-    >
+  const renderContent = (
+    <>
       <div className='card-body text-center'>
         <div className='overlay' />
         <div className='info_panel'>
@@ -175,8 +176,31 @@ const Movie = ({ movie }: Props) => {
       <Modal visible={visibleModal} onClose={handleHideModal}>
         <YouTubePlayer videoKey={videoKey} />
       </Modal>
+    </>
+  );
+
+  const content = ref ? (
+    <div
+      className={clsx('card', {
+        opened: cardOpened,
+      })}
+      ref={ref}
+      onClick={() => setCardOpened(true)}
+    >
+      {renderContent}
+    </div>
+  ) : (
+    <div
+      className={clsx('card', {
+        opened: cardOpened,
+      })}
+      onClick={() => setCardOpened(true)}
+    >
+      {renderContent}
     </div>
   );
-};
+
+  return content;
+});
 
 export default Movie;

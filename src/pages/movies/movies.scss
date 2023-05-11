@@ -197,6 +197,31 @@
       border-color: #1cb5e0;
     }
   }
+
+  .back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+
+    a {
+      color: #000;
+      background-color: #fff;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .end-of-list {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
 }
 
 .card {
