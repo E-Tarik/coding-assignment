@@ -28,3 +28,9 @@ export const searchMovies =
       throw new Error(err);
     }
   };
+
+export const getMovieItem = async (movieId: number) => {
+  return await axiosHelper(
+    `movie/${movieId}?api_key=${apiKey}&append_to_response=videos`
+  );
+};

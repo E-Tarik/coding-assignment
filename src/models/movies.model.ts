@@ -66,11 +66,14 @@ export interface MovieDetailsVideoResultModel {
   name: string;
   key: string;
   site: string;
-  size: 480;
+  size: number;
   type: string;
   official: boolean;
   published_at: string;
   id: string;
+}
+export interface MovieDetailsVideosModel {
+  results: MovieDetailsVideoResultModel[];
 }
 
 export interface MovieDetailsModel {
@@ -99,9 +102,7 @@ export interface MovieDetailsModel {
   video: boolean;
   vote_average: number;
   vote_count: number;
-  videos: {
-    results: MovieDetailsVideoResultModel[];
-  };
+  videos: MovieDetailsVideosModel
 }
 
 export enum FetchStatusEnum {

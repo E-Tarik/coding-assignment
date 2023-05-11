@@ -2,9 +2,12 @@ import { MouseEvent, useState, forwardRef } from 'react';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
-import { ENDPOINT, API_KEY } from '../constants';
-import { Modal, YouTubePlayer } from 'components';
-import { MovieDetailsModel, MovieItemModel } from 'models';
+import { Modal, Spinner, YouTubePlayer } from 'components';
+import {
+  MovieDetailsModel,
+  MovieDetailsVideosModel,
+  MovieItemModel,
+} from 'models';
 import { useAppDispatch } from 'hooks';
 import {
   addToFavorites,
@@ -13,6 +16,7 @@ import {
   removeFromWatchLater as removeFromWatchLaterList,
 } from 'redux/slices/movies-slice';
 import { moviesSelector } from 'redux/selectors';
+import { getMovieItem } from 'services';
 
 type Props = {
   movie: MovieItemModel;
@@ -26,22 +30,26 @@ const Movie = forwardRef(({ movie }: Props, ref: any) => {
 
   // Local States
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
+  const [loadingVideo, setLoadingVideo] = useState<boolean>(false);
   const [cardOpened, setCardOpened] = useState<boolean>(false);
   const [videoKey, setVideoKey] = useState<null | string>(null);
 
   const handleGetMovie = async () => {
-    const URL = `${ENDPOINT}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=videos`;
     setVideoKey(null);
     setVisibleModal(true);
-    const videoData: MovieDetailsModel = await fetch(URL).then((response) =>
-      response.json()
-    );
-    if (videoData.videos && videoData.videos.results.length) {
-      const trailer = videoData.videos.results.find(
-        (vid) => vid.type === 'Trailer'
-      );
-      setVideoKey(trailer ? trailer.key : videoData.videos.results[0].key);
-    }
+    setLoadingVideo(true);
+
+    getMovieItem(movie.id)
+      .then((result) => {
+        const videos = (result as MovieDetailsModel)
+          .videos as MovieDetailsVideosModel;
+
+        if (videos && videos.results.length) {
+          const trailer = videos.results.find((vid) => vid.type === 'Trailer');
+          setVideoKey(trailer ? trailer.key : videos.results[0].key);
+        }
+      })
+      .finally(() => setLoadingVideo(false));
   };
 
   const handleClickCloseButton = (e: MouseEvent) => {
@@ -152,15 +160,17 @@ const Movie = forwardRef(({ movie }: Props, ref: any) => {
             View Trailer
           </button>
         </div>
-        <img
-          className='center-block'
-          src={
-            movie.poster_path
-              ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-              : 'assets/not-found-500X750.jpeg'
-          }
-          alt='Movie poster'
-        />
+        <div className='movie-poster'>
+          <img
+            className='center-block'
+            src={
+              movie.poster_path
+                ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                : 'assets/not-found-500X750.jpeg'
+            }
+            alt='Movie poster'
+          />
+        </div>
       </div>
       <h6 className='title mobile-card'>{movie.title}</h6>
       <h6 className='title'>{movie.title}</h6>
@@ -174,7 +184,7 @@ const Movie = forwardRef(({ movie }: Props, ref: any) => {
       </button>
 
       <Modal visible={visibleModal} onClose={handleHideModal}>
-        <YouTubePlayer videoKey={videoKey} />
+        {loadingVideo ? <Spinner /> : <YouTubePlayer videoKey={videoKey} />}
       </Modal>
     </>
   );

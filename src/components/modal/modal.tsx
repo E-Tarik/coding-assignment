@@ -1,6 +1,8 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect, ReactNode, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
+
+import { useClickOutside } from 'hooks';
 
 import styles from './modal.module.scss';
 
@@ -12,15 +14,21 @@ type Props = {
 };
 
 const Modal = ({ title, children, visible, onClose }: Props) => {
-  const [isBrowser, setIsBrowser] = useState(false);
+  const [isBrowser, setIsBrowser] = useState<boolean>(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsBrowser(true);
   }, []);
 
+  useClickOutside(ref, () => {
+    onClose();
+  });
+
   const modalContent = visible ? (
     <div className={styles.ModalOverlay}>
       <div
+        ref={ref}
         className={clsx(styles.ModalContainer, {
           [styles.visible]: visible,
         })}
