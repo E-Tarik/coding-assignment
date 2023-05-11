@@ -11,7 +11,7 @@ import {
 import debounce from 'lodash.debounce';
 
 import { Header } from 'components';
-import { TaggedPage, MoviesPage } from 'pages';
+import { TaggedPage, MoviesPage, NotFoundPage } from 'pages';
 import { useAppDispatch, useMovies } from 'hooks';
 import { removeAllMovies } from 'redux/slices/movies-slice';
 
@@ -82,10 +82,7 @@ const App = () => {
             path='/watch-later'
             element={<TaggedPage pageType='watch-later' />}
           />
-          <Route
-            path='*'
-            element={<h1 className='not-found'>Page Not Found</h1>}
-          />
+          <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </div>
 

@@ -21,6 +21,6 @@ function useClickOutside(ref: any, handler: (event: any) => void) {
       document.removeEventListener('mousedown', listener);
       document.removeEventListener('touchstart', listener);
     };
-  }, [ref]);
+  }, [handler, ref]);
 }
 export default useClickOutside;
