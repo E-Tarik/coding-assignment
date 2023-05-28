@@ -1,11 +1,19 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { watchLaterSlice } from '../lib/redux/slices';
-import { Movie } from './Movie';
 
-export const WatchLater = ({ viewTrailer }) => {
-	const state = useSelector((state) => state);
-	const { watchLater } = state;
+import { watchLaterSlice } from '../lib/redux/slices';
+
+// Components
+import { Movie } from '../components';
+
+// Models
+import { IMovieItemModel } from '../types';
+
+// Redux
+import { getWatchLaterMovies } from '../lib/redux/selectors';
+
+export const WatchLaterPage = () => {
+	const watchLater = useSelector(getWatchLaterMovies);
 	const { removeAllWatchLater } = watchLaterSlice.actions;
 	const dispatch = useDispatch();
 
@@ -14,9 +22,9 @@ export const WatchLater = ({ viewTrailer }) => {
 			{watchLater.watchLaterMovies.length > 0 && (
 				<div data-testid="watch-later-movies" className="starred-movies">
 					<h6 className="header">Watch Later List</h6>
-					<div className="row">
-						{watchLater.watchLaterMovies.map((movie) => (
-							<Movie movie={movie} key={movie.id} viewTrailer={viewTrailer} />
+					<div className="movies-list row">
+						{watchLater.watchLaterMovies.map((movie: IMovieItemModel) => (
+							<Movie movie={movie} key={movie.id} />
 						))}
 					</div>
 

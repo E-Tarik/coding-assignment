@@ -1,4 +1,4 @@
-import starredSlice from '../data/starredSlice'
+import starredSlice from '../lib/redux/slices/starredSlicee
 import { moviesMock } from './movies.mocks'
 
 describe('starredSlice test', () => {
