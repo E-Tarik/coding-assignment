@@ -5,9 +5,12 @@ import { createSearchParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api/api';
 import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from '../api/config';
 
+// Models
+import { IMovieItemModel } from '../types';
+
 export const useMovies = (query: string, page = 1) => {
 	const [isLoading, setIsLoading] = useState(false);
-	const [movies, setMovies] = useState<any>([]);
+	const [movies, setMovies] = useState<IMovieItemModel[]>([]);
 	const [hasNextPage, setNextPage] = useState(false);
 	const [searchParams, setSearchParams] = useSearchParams();
 

@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { IMovieItemModel } from '../../../types';
 
 export const watchLaterSlice = createSlice({
 	name: 'watch-later',
 	initialState: {
-		watchLaterMovies: [] as any,
+		watchLaterMovies: [] as IMovieItemModel[],
 	},
 	reducers: {
 		addToWatchLater: (state, action) => {
@@ -11,7 +12,7 @@ export const watchLaterSlice = createSlice({
 		},
 		removeFromWatchLater: (state, action) => {
 			const indexOfId = state.watchLaterMovies.findIndex(
-				(key: any) => key.id === action.payload.id,
+				(key) => key.id === action.payload.id,
 			);
 			state.watchLaterMovies.splice(indexOfId, 1);
 		},

@@ -1,4 +1,4 @@
-import { useState, forwardRef, RefObject } from 'react';
+import React, { useState, forwardRef, RefObject } from 'react';
 
 // API
 import { api } from '../api/api';
@@ -31,7 +31,7 @@ export const Movie = forwardRef(({ movie }: Props, ref) => {
 
 	const dispatch = useDispatch();
 
-	const handleCloseCard = (e: any) => {
+	const handleCloseCard = (e: React.MouseEvent) => {
 		if (e.stopPropagation) e.stopPropagation();
 		setCardOpened(false);
 	};
@@ -66,7 +66,7 @@ export const Movie = forwardRef(({ movie }: Props, ref) => {
 		setModalOpen(false);
 	};
 
-	const moviePosterSrc = (movie: any) => {
+	const moviePosterSrc = (movie: IMovieItemModel) => {
 		return movie.poster_path
 			? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
 			: 'not-found-500X750.jpeg';
@@ -74,7 +74,7 @@ export const Movie = forwardRef(({ movie }: Props, ref) => {
 
 	const starButton = () => {
 		const isMovieStarred = starred.starredMovies
-			.map((movie: any) => movie.id)
+			.map((movie: IMovieItemModel) => movie.id)
 			.includes(movie.id);
 
 		return !isMovieStarred ? (
@@ -110,7 +110,7 @@ export const Movie = forwardRef(({ movie }: Props, ref) => {
 
 	const watchLaterButton = () => {
 		const isMovieInList = watchLater.watchLaterMovies
-			.map((movie: any) => movie.id)
+			.map((movie: IMovieItemModel) => movie.id)
 			.includes(movie.id);
 
 		return !isMovieInList ? (
