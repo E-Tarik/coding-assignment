@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { Routes, Route, useSearchParams, useNavigate } from 'react-router-dom';
 
 // Components
@@ -10,18 +11,24 @@ import { MoviesPage, StarredPage, WatchLaterPage } from './pages';
 // Hooks
 import { useMovies } from './hooks';
 
+// Redux
+import { moviesSlice } from './lib/redux/slices';
+
 const App = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const searchQuery = searchParams.get('search');
 	const [pageNum, setPageNum] = useState(1);
 	const [query, setQuery] = useState(searchQuery || '');
-	const { movies, isLoading, hasNextPage } = useMovies(query, pageNum);
-	const observer = useRef();
 
+	const { isLoading, hasNextPage } = useMovies(query, pageNum);
+
+	const observer = useRef();
+	const dispatch = useDispatch();
+	const { clearAllMovies } = moviesSlice.actions;
 	const navigate = useNavigate();
 
 	const lastMovieElementRef = useCallback(
-		(node) => {
+		(elem) => {
 			if (isLoading) return;
 			if (observer.current) observer.current.disconnect();
 			observer.current = new IntersectionObserver((entries) => {
@@ -29,15 +36,24 @@ const App = () => {
 					setPageNum((prevPage) => prevPage + 1);
 				}
 			});
-			if (node) observer.current.observe(node);
+			if (elem) observer.current.observe(elem);
 		},
-		[isLoading, hasNextPage],
+		[isLoading, hasNextPage, setPageNum],
 	);
 
 	const searchMovies = (query) => {
 		navigate('/');
-		setQuery(query);
 		setPageNum(1);
+		setQuery(query);
+		dispatch(clearAllMovies());
+		scrollToFirstPage();
+	};
+
+	const scrollToFirstPage = () => {
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		});
 	};
 
 	return (
@@ -56,7 +72,6 @@ const App = () => {
 						path="/"
 						element={
 							<MoviesPage
-								movies={movies}
 								isLoading={isLoading}
 								lastMovieRef={lastMovieElementRef}
 							/>

@@ -1,7 +1,7 @@
 import { RootState } from '../init/store';
 
-export const getMovies = (state: RootState) => {
-	return state.movies as any;
+export const getAllMovies = (state: RootState) => {
+	return state.movies;
 };
 
 export const getWatchLaterMovies = (state: RootState) => {

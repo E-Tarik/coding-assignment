@@ -1,27 +1,29 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { createSearchParams, useSearchParams } from 'react-router-dom';
 
 // API
 import { api } from '../api/api';
 import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from '../api/config';
 
-// Models
-import { IMovieItemModel } from '../types';
+// Redux
+import { moviesSlice } from '../lib/redux/slices';
+const { setAllMovies, clearAllMovies } = moviesSlice.actions;
 
 export const useMovies = (query: string, page = 1) => {
+	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(false);
-	const [movies, setMovies] = useState<IMovieItemModel[]>([]);
 	const [hasNextPage, setNextPage] = useState(false);
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	useEffect(() => {
-		setMovies([]);
+		dispatch(clearAllMovies());
 	}, [searchParams, query]);
 
 	const getMoviesAndUpdateLocalData = async (url: string) => {
 		try {
 			const { data } = await api.movies.fetchMovies(url);
-			setMovies([...movies, ...data.results]);
+			dispatch(setAllMovies(data));
 			setNextPage(data.page < data.total_pages);
 			setIsLoading(false);
 		} catch (err) {
@@ -40,5 +42,5 @@ export const useMovies = (query: string, page = 1) => {
 			query?.length ? createSearchParams({ search: query }) : undefined,
 		);
 	}, [query, page]);
-	return { movies, isLoading, hasNextPage };
+	return { isLoading, hasNextPage };
 };

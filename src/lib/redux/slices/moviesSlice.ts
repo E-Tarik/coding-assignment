@@ -1,31 +1,45 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-
-export const fetchMovies = createAsyncThunk(
-	'fetch-movies',
-	async (apiUrl: string) => {
-		const response = await fetch(apiUrl);
-		return response.json();
-	},
-);
+import { createSlice } from '@reduxjs/toolkit';
+import { IMovieItemModel } from '../../../types';
 
 export const moviesSlice = createSlice({
 	name: 'movies',
 	initialState: {
-		movies: [],
-		fetchStatus: '',
+		allMovies: [] as any,
 	},
-	reducers: {},
-	extraReducers: (builder) => {
-		builder
-			.addCase(fetchMovies.fulfilled, (state, action) => {
-				state.movies = action.payload;
-				state.fetchStatus = 'success';
-			})
-			.addCase(fetchMovies.pending, (state) => {
-				state.fetchStatus = 'loading';
-			})
-			.addCase(fetchMovies.rejected, (state) => {
-				state.fetchStatus = 'error';
-			});
+	reducers: {
+		setAllMovies: (state, action) => {
+			if (state?.allMovies?.results) {
+				const uniqueMoviesIds = new Set(
+					state.allMovies.results.map(({ id }: IMovieItemModel) => id),
+				);
+				const data = {
+					page: action.payload?.page,
+					total_pages: action.payload?.total_pages,
+					total_results: action.payload?.total_results,
+					results: [
+						...state.allMovies.results,
+						...action.payload.results.filter(
+							({ id }: IMovieItemModel) => !uniqueMoviesIds.has(id),
+						),
+					],
+				};
+
+				return {
+					...state,
+					allMovies: data,
+				};
+			} else {
+				return {
+					...state,
+					allMovies: action.payload,
+				};
+			}
+		},
+		clearAllMovies: (state) => {
+			return {
+				...state,
+				allMovies: {},
+			};
+		},
 	},
 });

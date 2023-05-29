@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
-import '../theme/modal.scss';
-
 type Props = {
 	isOpen: boolean;
 	onClose: () => void;
