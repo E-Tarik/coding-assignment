@@ -21,7 +21,7 @@ describe('starredSlice test', () => {
 
       it('should remove movie from starred', () => {
         const initialState = { ...state, starredMovies: moviesMock }
-        const action = starredSlice.actions.unstarMovie(moviesMock[0])
+        const action = starredSlice.actions.unstarMovie(moviesMock[0].id)
         const result = starredSlice.reducer(initialState, action)
         expect(result.starredMovies[0]).toBe(moviesMock[1])
       })

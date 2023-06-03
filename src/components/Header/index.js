@@ -7,7 +7,7 @@ import '../../styles/header.scss'
 
 const Header = ({ searchMovies }) => {
   
-  const { starredMovies } = useSelector((state) => state.starred)
+  const starredMoviesLength = useSelector((state) => state.starred.starredMovies.length)
 
   return (
     <header>
@@ -17,10 +17,10 @@ const Header = ({ searchMovies }) => {
 
       <nav>
         <NavLink to="/starred" data-testid="nav-starred" className="nav-starred">
-          {starredMovies.length > 0 ? (
+          {starredMoviesLength > 0 ? (
             <>
             <i className="bi bi-star-fill bi-star-fill-white" />
-            <sup className="star-number">{starredMovies.length}</sup>
+            <sup className="star-number">{starredMoviesLength}</sup>
             </>
           ) : (
             <i className="bi bi-star" />

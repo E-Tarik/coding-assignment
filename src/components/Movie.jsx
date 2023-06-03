@@ -40,7 +40,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
                             <i className="bi bi-star" />
                         </span>
                     ) : (
-                        <span className="btn-star" data-testid="unstar-link" onClick={() => dispatch(unstarMovie(movie))}>
+                        <span className="btn-star" data-testid="unstar-link" onClick={() => dispatch(unstarMovie(movie.id))}>
                             <i className="bi bi-star-fill" data-testid="star-fill" />
                         </span>
                     )}
@@ -53,7 +53,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
                                 title: movie.title
                         }))}>Watch Later</button>
                     ) : (
-                        <button type="button" data-testid="remove-watch-later" className="btn btn-light btn-watch-later blue" onClick={() => dispatch(removeFromWatchLater(movie))}><i className="bi bi-check"></i></button>
+                        <button type="button" data-testid="remove-watch-later" className="btn btn-light btn-watch-later blue" onClick={() => dispatch(removeFromWatchLater(movie.id))}><i className="bi bi-check"></i></button>
                     )}
                     <button type="button" className="btn btn-dark" onClick={() => viewTrailer(movie)}>View Trailer</button>                                                
                 </div>
