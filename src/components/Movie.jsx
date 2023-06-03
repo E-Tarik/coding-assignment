@@ -7,7 +7,6 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
   const [isOpened, setIsOpened] = useState(false);
 
   return (
-    <div className="wrapper col-3 col-sm-4 col-md-3 col-lg-3 col-xl-2">
       <div
         className={`card ${isOpened ? 'opened' : ''}`}
         onClick={() => setIsOpened(true)}
@@ -51,7 +50,6 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-    </div>
   );
 };
 

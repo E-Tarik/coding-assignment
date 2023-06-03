@@ -7,7 +7,7 @@ const Movies = ({ viewTrailer, closeCard }) => {
     const {movies} = useMovies()
 
     return (
-        <div data-testid="movies">
+        <div data-testid="movies" className="movies">
             {movies.movies.results?.map((movie) => {
                 return (
                     <Movie 
