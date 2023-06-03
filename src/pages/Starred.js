@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import starredSlice from '../data/starredSlice'
-import Movie from './Movie'
+import Movie from '../components/Movie'
 import '../styles/starred.scss'
 
 const Starred = ({viewTrailer}) => {

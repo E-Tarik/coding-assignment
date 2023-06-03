@@ -3,9 +3,9 @@ import { Routes, Route } from "react-router-dom"
 import 'reactjs-popup/dist/index.css'
 import { ENDPOINT, API_KEY } from './constants/api'
 import Header from './components/Header'
-import Movies from './components/Movies'
-import Starred from './components/Starred'
-import WatchLater from './components/WatchLater'
+import Movies from './pages/Movies'
+import Starred from './pages/Starred'
+import WatchLater from './pages/WatchLater'
 import YouTubePlayer from './components/YoutubePlayer'
 import './app.scss'
 

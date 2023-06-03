@@ -1,4 +1,4 @@
-import Movie from './Movie'
+import Movie from '../components/Movie'
 import '../styles/movies.scss'
 import { useMovies } from '../hooks/useMovies'
 
