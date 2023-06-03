@@ -1,7 +1,9 @@
 import { Link, NavLink } from "react-router-dom"
 import { useSelector } from 'react-redux'
 
-import '../styles/header.scss'
+import {Search} from './Search'
+
+import '../../styles/header.scss'
 
 const Header = ({ searchMovies }) => {
   
@@ -29,17 +31,7 @@ const Header = ({ searchMovies }) => {
         </NavLink>
       </nav>
 
-      <div className="input-group rounded">
-        <Link to="/" onClick={(e) => searchMovies('')} className="search-link" >
-          <input type="search" data-testid="search-movies"
-            onKeyUp={(e) => searchMovies(e.target.value)} 
-            className="form-control rounded" 
-            placeholder="Search movies..." 
-            aria-label="Search movies" 
-            aria-describedby="search-addon" 
-            />
-        </Link>            
-      </div>      
+      <Search />    
     </header>
   )
 }
