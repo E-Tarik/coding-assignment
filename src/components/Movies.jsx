@@ -1,7 +1,10 @@
 import Movie from './Movie'
 import '../styles/movies.scss'
+import { useMovies } from '../hooks/useMovies'
 
-const Movies = ({ movies, viewTrailer, closeCard }) => {
+const Movies = ({ viewTrailer, closeCard }) => {
+
+    const {movies} = useMovies()
 
     return (
         <div data-testid="movies">
