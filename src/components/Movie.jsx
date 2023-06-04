@@ -1,12 +1,28 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import placeholder from '../assets/not-found-500X750.jpeg';
 import { WatchLaterButton } from './global/WatchLaterButton';
 import { StarButton } from './global/StarButton';
+import { Modal } from './Modal';
+import YouTubePlayer from './YoutubePlayer';
+import { useTrailer } from '../hooks/useTrailer';
 
-const Movie = ({ movie, viewTrailer, closeCard }) => {
+const Movie = ({ movie }) => {
   const [isOpened, setIsOpened] = useState(false);
+  const [isModalOpen, setIsModalOpened] = useState(false);
+  const { videoKey, getMovie } = useTrailer(movie.id);
+
+  const handleViewTrailer = useCallback(() => {
+    getMovie();
+    setIsModalOpened(true);
+  }, [getMovie]);
 
   return (
+    <>
+      {isModalOpen ? (
+        <Modal closeModal={() => setIsModalOpened(false)}>
+          <YouTubePlayer videoKey={videoKey} />
+        </Modal>
+      ) : null}
       <div
         className={`card ${isOpened ? 'opened' : ''}`}
         onClick={() => setIsOpened(true)}
@@ -21,7 +37,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
             <button
               type="button"
               className="btn btn-dark"
-              onClick={() => viewTrailer(movie)}
+              onClick={handleViewTrailer}
             >
               View Trailer
             </button>
@@ -50,6 +66,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+    </>
   );
 };
 

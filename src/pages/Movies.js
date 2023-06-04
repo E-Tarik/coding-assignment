@@ -2,7 +2,7 @@ import Movie from '../components/Movie'
 import '../styles/movies.scss'
 import { useMovies } from '../hooks/useMovies'
 
-const Movies = ({ viewTrailer, closeCard }) => {
+const Movies = () => {
 
     const {movies} = useMovies()
 
@@ -13,8 +13,6 @@ const Movies = ({ viewTrailer, closeCard }) => {
                     <Movie 
                         movie={movie} 
                         key={movie.id}
-                        viewTrailer={viewTrailer}
-                        closeCard={closeCard}
                     />
                 )
             })}

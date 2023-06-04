@@ -6,3 +6,7 @@ export const discoverUrl = `${ENDPOINT}/discover/movie?api_key=${API_KEY}&sort_b
 export function getSearchUrl(query) {
   return `${ENDPOINT}/search/movie?api_key=${API_KEY}&query=${query}`
 }
+
+export function getMovieUrl(id) {
+  return `${ENDPOINT}/movie/${id}?api_key=${API_KEY}&append_to_response=videos`
+}

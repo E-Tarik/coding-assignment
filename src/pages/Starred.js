@@ -4,7 +4,7 @@ import starredSlice from '../data/starredSlice'
 import Movie from '../components/Movie'
 import '../styles/starred.scss'
 
-const Starred = ({viewTrailer}) => {
+const Starred = () => {
 
     const starred = useSelector((state) => state.starred)
     const { clearAllStarred } = starredSlice.actions
@@ -19,7 +19,6 @@ const Starred = ({viewTrailer}) => {
           <Movie 
             movie={movie} 
             key={movie.id}
-            viewTrailer={viewTrailer}
           />
         ))}
         </div>

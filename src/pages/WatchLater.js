@@ -4,7 +4,7 @@ import watchLaterSlice from '../data/watchLaterSlice'
 import Movie from '../components/Movie'
 import '../styles/starred.scss'
 
-const WatchLater = ({viewTrailer}) => {
+const WatchLater = () => {
 
     const watchLater = useSelector((state) => state.watchLater)
     const { removeAllWatchLater } = watchLaterSlice.actions
@@ -19,7 +19,6 @@ const WatchLater = ({viewTrailer}) => {
           <Movie 
             movie={movie} 
             key={movie.id}
-            viewTrailer={viewTrailer}
           />
         ))}
         </div>
