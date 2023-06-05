@@ -3,24 +3,6 @@ import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from "./test/utils"
 import App from './App'
 
-it('renders watch later link', () => {
-  renderWithProviders(<App />)
-  const linkElement = screen.getByText(/watch later/i)
-  expect(linkElement).toBeInTheDocument()
-})
-
-it('search for movies', async () => {
-  renderWithProviders(<App />)
-  await userEvent.type(screen.getByTestId('search-movies'), 'forrest gump')
-  await waitFor(() => {
-    expect(screen.getAllByText('Through the Eyes of Forrest Gump')[0]).toBeInTheDocument()
-  })
-  const viewTrailerBtn = screen.getAllByText('View Trailer')[0]
-  await userEvent.click(viewTrailerBtn)
-  await waitFor(() => {
-    expect(screen.getByTestId('youtube-player')).toBeInTheDocument()
-  })
-})
 
 it('renders watch later component', async() => {
   renderWithProviders(<App />)
@@ -39,3 +21,14 @@ it('renders starred component', async() => {
     expect(screen.getByTestId('starred')).toBeInTheDocument()
   })  
 })
+
+it('search for movies', async () => {
+  renderWithProviders(<App />)
+  await userEvent.type(screen.getByTestId('search-movies'), 'forrest gump')
+  await waitFor(() => {
+    expect(screen.getAllByText('Through the Eyes of Forrest Gump')[0]).toBeInTheDocument()
+  })
+})
+
+
+

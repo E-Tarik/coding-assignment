@@ -20,7 +20,7 @@ const Header = ({ searchMovies }) => {
           {starredMoviesLength > 0 ? (
             <>
             <i className="bi bi-star-fill bi-star-fill-white" />
-            <sup className="star-number">{starredMoviesLength}</sup>
+            <sup data-testid="star-number" className="star-number">{starredMoviesLength}</sup>
             </>
           ) : (
             <i className="bi bi-star" />

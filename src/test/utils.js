@@ -30,5 +30,13 @@ export function renderWithProviders(
     return <Provider store={store}><BrowserRouter>{children}</BrowserRouter></Provider>;
   }
 
+  const intersectionObserverMock = () => ({
+    observe: () => null,
+    disconnect: () => null
+  });
+  window.IntersectionObserver = jest
+    .fn()
+    .mockImplementation(intersectionObserverMock);
+
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
