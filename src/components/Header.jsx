@@ -1,47 +1,82 @@
-import { Link, NavLink } from "react-router-dom"
+import React, { useCallback } from 'react'
+import PropTypes from 'prop-types'
+import { Link, NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import '../styles/header.scss'
 
-const Header = ({ searchMovies }) => {
-  
+function Header ({ searchMovies }) {
   const { starredMovies } = useSelector((state) => state.starred)
+
+  const onClick = useCallback((event) => {
+    searchMovies(event.currentTarget.value)
+  }, [searchMovies])
+
+  const resetMovies = useCallback(() => {
+    searchMovies('')
+  }, [searchMovies])
 
   return (
     <header>
-      <Link to="/" data-testid="home" onClick={() => searchMovies('')}>
+      <Link
+        data-testid="home"
+        onClick={resetMovies}
+        to="/"
+      >
         <i className="bi bi-film" />
       </Link>
 
       <nav>
-        <NavLink to="/starred" data-testid="nav-starred" className="nav-starred">
-          {starredMovies.length > 0 ? (
-            <>
-            <i className="bi bi-star-fill bi-star-fill-white" />
-            <sup className="star-number">{starredMovies.length}</sup>
-            </>
-          ) : (
-            <i className="bi bi-star" />
-          )}
+        <NavLink
+          className="nav-starred"
+          data-testid="nav-starred"
+          to="/starred"
+        >
+          {starredMovies.length > 0
+            ? (
+              <>
+                <i className="bi bi-star-fill bi-star-fill-white" />
+
+                <sup className="star-number">
+                  {starredMovies.length}
+                </sup>
+              </>
+            )
+            : (
+              <i className="bi bi-star" />
+            )}
         </NavLink>
-        <NavLink to="/watch-later" className="nav-fav">
+
+        <NavLink
+          className="nav-fav"
+          to="/watch-later"
+        >
           watch later
         </NavLink>
       </nav>
 
       <div className="input-group rounded">
-        <Link to="/" onClick={(e) => searchMovies('')} className="search-link" >
-          <input type="search" data-testid="search-movies"
-            onKeyUp={(e) => searchMovies(e.target.value)} 
-            className="form-control rounded" 
-            placeholder="Search movies..." 
-            aria-label="Search movies" 
-            aria-describedby="search-addon" 
-            />
-        </Link>            
-      </div>      
+        <Link
+          className="search-link"
+          onClick={resetMovies}
+          to="/"
+        >
+          <input
+            aria-describedby="search-addon"
+            aria-label="Search movies"
+            className="form-control rounded"
+            data-testid="search-movies"
+            onKeyUp={onClick}
+            placeholder="Search movies..."
+            type="search"
+          />
+        </Link>
+      </div>
     </header>
   )
+}
+Header.propTypes = {
+  searchMovies: PropTypes.func.isRequired
 }
 
 export default Header
