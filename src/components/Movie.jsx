@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import starredSlice from '../data/starredSlice'
 import watchLaterSlice from '../data/watchLaterSlice'
 import placeholder from '../assets/not-found-500X750.jpeg'
-import Star from './Star'
-import WatchLaterButton from './WatchLaterButton'
 
 function Movie ({ movie, viewTrailer }) {
   const state = useSelector((state) => state)
@@ -62,15 +60,29 @@ function Movie ({ movie, viewTrailer }) {
               {movie.release_date?.substring(0, 4)}
             </div>
 
-            <Star
+            <span
+              className="btn-star"
+              data-testid={isStarred ? 'unstar-link' : 'starred-link'}
               onClick={onStarClick}
-              starred={isStarred}
-            />
+            >
+              <i
+                className={`bi bi-star${isStarred ? '-fill' : ''}`}
+                data-testid={isStarred ? 'star-fill' : undefined}
+              />
+            </span>
 
-            <WatchLaterButton
+            <button
+              className={`btn btn-light btn-watch-later${savedToWatchLater ? ' blue' : ''}`}
+              data-testid={savedToWatchLater ? 'remove-watch-later' : 'watch-later'}
               onClick={onWatchLaterButtonClick}
-              saved={savedToWatchLater}
-            />
+              type="button"
+            >
+              {savedToWatchLater
+                ? (
+                  <i className="bi bi-check" />
+                )
+                : 'Watch Later' }
+            </button>
 
             <button
               className="btn btn-dark"
