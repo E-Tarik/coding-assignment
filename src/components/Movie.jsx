@@ -1,18 +1,14 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import starredSlice from '../data/starredSlice'
 import watchLaterSlice from '../data/watchLaterSlice'
 import placeholder from '../assets/not-found-500X750.jpeg'
 
-function Movie ({ movie, viewTrailer }) {
-  const state = useSelector((state) => state)
-  const { starred, watchLater } = state
+function Movie ({ movie, viewTrailer, isStarred, isSavedToWatchLater }) {
   const { starMovie, unstarMovie } = starredSlice.actions
   const { addToWatchLater, removeFromWatchLater } = watchLaterSlice.actions
 
-  const isStarred = starred.starredMovies.map(movie => movie.id).includes(movie.id)
-  const savedToWatchLater = watchLater.watchLaterMovies.map(movie => movie.id).includes(movie.id)
   const movieDataToRender = {
     ...movie,
     release_date: movie.release_date?.substring?.(0, 4)
@@ -38,9 +34,9 @@ function Movie ({ movie, viewTrailer }) {
   }, [dispatch, starMovie, unstarMovie, isStarred, movieDataToRender])
 
   const onWatchLaterButtonClick = useCallback(() => {
-    const action = savedToWatchLater ? removeFromWatchLater : addToWatchLater
+    const action = isSavedToWatchLater ? removeFromWatchLater : addToWatchLater
     dispatch(action(movieDataToRender))
-  }, [dispatch, addToWatchLater, removeFromWatchLater, movieDataToRender, savedToWatchLater])
+  }, [dispatch, addToWatchLater, removeFromWatchLater, movieDataToRender, isSavedToWatchLater])
 
   return (
     <div className="wrapper col-3 col-sm-4 col-md-3 col-lg-3 col-xl-2">
@@ -57,7 +53,7 @@ function Movie ({ movie, viewTrailer }) {
             </div>
 
             <div className="year">
-              {movie.release_date?.substring(0, 4)}
+              {movieDataToRender.release_date}
             </div>
 
             <span
@@ -72,12 +68,12 @@ function Movie ({ movie, viewTrailer }) {
             </span>
 
             <button
-              className={`btn btn-light btn-watch-later${savedToWatchLater ? ' blue' : ''}`}
-              data-testid={savedToWatchLater ? 'remove-watch-later' : 'watch-later'}
+              className={`btn btn-light btn-watch-later${isSavedToWatchLater ? ' blue' : ''}`}
+              data-testid={isSavedToWatchLater ? 'remove-watch-later' : 'watch-later'}
               onClick={onWatchLaterButtonClick}
               type="button"
             >
-              {savedToWatchLater
+              {isSavedToWatchLater
                 ? (
                   <i className="bi bi-check" />
                 )
@@ -124,14 +120,21 @@ function Movie ({ movie, viewTrailer }) {
 }
 
 Movie.propTypes = {
+  isSavedToWatchLater: PropTypes.bool,
+  isStarred: PropTypes.bool,
   movie: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     overview: PropTypes.string,
     release_date: PropTypes.string,
     poster_path: PropTypes.string,
     title: PropTypes.string
   }).isRequired,
   viewTrailer: PropTypes.func.isRequired
+}
+
+Movie.defaultProps = {
+  isSavedToWatchLater: false,
+  isStarred: false
 }
 
 export default Movie

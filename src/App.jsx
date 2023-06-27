@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Routes, Route, createSearchParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import 'reactjs-popup/dist/index.css'
@@ -11,19 +11,20 @@ import WatchLater from './components/WatchLater'
 import YouTubePlayer from './components/YoutubePlayer'
 import './app.scss'
 
-const App = () => {
-  const state = useSelector((state) => state)
-  const { movies } = state
+function App () {
+  const movies = useSelector((state) => state.movies)
+  const starredIds = useSelector((state) => state.starred.starredMovies).map(movie => movie.id)
+  const watchLaterIds = useSelector((state) => state.watchLater.watchLaterMovies).map(movie => movie.id)
   const dispatch = useDispatch()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchQuery = searchParams.get('search')
   const [videoKey, setVideoKey] = useState()
-  const [, setOpen] = useState(false)
+  const [isOpened, setIsOpened] = useState()
   const navigate = useNavigate()
 
-  const closeCard = () => {
-
-  }
+  const closeCard = useCallback(() => {
+    console.log('On card close', isOpened)
+  })
 
   const getSearchResults = (query) => {
     if (query !== '') {
@@ -35,10 +36,10 @@ const App = () => {
     }
   }
 
-  const searchMovies = (query) => {
+  const searchMovies = useCallback((query) => {
     navigate('/')
     getSearchResults(query)
-  }
+  }, [navigate, getSearchResults])
 
   const getMovies = () => {
     if (searchQuery) {
@@ -46,12 +47,6 @@ const App = () => {
     } else {
       dispatch(fetchMovies(ENDPOINT_DISCOVER))
     }
-  }
-
-  const viewTrailer = (movie) => {
-    getMovie(movie.id)
-    if (!videoKey) setOpen(true)
-    setOpen(true)
   }
 
   const getMovie = async (id) => {
@@ -67,30 +62,71 @@ const App = () => {
     }
   }
 
+  const viewTrailer = useCallback((movie) => {
+    getMovie(movie.id)
+    if (!videoKey) setIsOpened(true)
+    setIsOpened(true)
+  }, [getMovie, setIsOpened])
+
   useEffect(() => {
     getMovies()
   }, [])
 
   return (
     <div className="App">
-      <Header searchMovies={searchMovies} searchParams={searchParams} setSearchParams={setSearchParams} />
+      <Header
+        searchMovies={searchMovies}
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
 
       <div className="container">
         {videoKey
           ? (
-          <YouTubePlayer
-            videoKey={videoKey}
-          />
-            )
+            <YouTubePlayer
+              videoKey={videoKey}
+            />
+          )
           : (
-          <div style={{ padding: '30px' }}><h6>no trailer available. Try another movie</h6></div>
-            )}
+            <div style={{ padding: '30px' }}>
+              <h6>
+                no trailer available. Try another movie
+              </h6>
+            </div>
+          )}
 
         <Routes>
-          <Route path="/" element={<Movies movies={movies} viewTrailer={viewTrailer} closeCard={closeCard} />} />
-          <Route path="/starred" element={<Starred viewTrailer={viewTrailer} />} />
-          <Route path="/watch-later" element={<WatchLater viewTrailer={viewTrailer} />} />
-          <Route path="*" element={<h1 className="not-found">Page Not Found</h1>} />
+          <Route
+            element={(
+              <Movies
+                closeCard={closeCard}
+                movies={movies}
+                starredIds={starredIds}
+                viewTrailer={viewTrailer}
+                watchLaterIds={watchLaterIds}
+              />
+            )}
+            path="/"
+          />
+
+          <Route
+            element={<Starred viewTrailer={viewTrailer} />}
+            path="/starred"
+          />
+
+          <Route
+            element={<WatchLater viewTrailer={viewTrailer} />}
+            path="/watch-later"
+          />
+
+          <Route
+            element={(
+              <h1 className="not-found">
+                Page Not Found
+              </h1>
+            )}
+            path="*"
+          />
         </Routes>
       </div>
     </div>
