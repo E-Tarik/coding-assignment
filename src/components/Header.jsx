@@ -1,13 +1,10 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Link, NavLink } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 
 import '../styles/header.scss'
 
-function Header ({ searchMovies }) {
-  const { starredMovies } = useSelector((state) => state.starred)
-
+function Header ({ searchMovies, starredCount }) {
   const onClick = useCallback((event) => {
     searchMovies(event.currentTarget.value)
   }, [searchMovies])
@@ -32,26 +29,24 @@ function Header ({ searchMovies }) {
           data-testid="nav-starred"
           to="/starred"
         >
-          {starredMovies.length > 0
-            ? (
-              <>
-                <i className="bi bi-star-fill bi-star-fill-white" />
+          <i
+            className={`bi bi-star${starredCount > 0 ? '-fill bi-star-fill-white' : ''}`}
+          />
 
-                <sup className="star-number">
-                  {starredMovies.length}
-                </sup>
-              </>
+          {starredCount > 0
+            ? (
+              <sup className="star-number">
+                {starredCount}
+              </sup>
             )
-            : (
-              <i className="bi bi-star" />
-            )}
+            : null}
         </NavLink>
 
         <NavLink
           className="nav-fav"
           to="/watch-later"
         >
-          watch later
+          Watch later
         </NavLink>
       </nav>
 
@@ -75,8 +70,14 @@ function Header ({ searchMovies }) {
     </header>
   )
 }
+
 Header.propTypes = {
-  searchMovies: PropTypes.func.isRequired
+  searchMovies: PropTypes.func.isRequired,
+  starredCount: PropTypes.number
+}
+
+Header.defaultProps = {
+  starredCount: 0
 }
 
 export default Header

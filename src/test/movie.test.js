@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from './utils'
 import App from '../App'
@@ -14,7 +14,8 @@ it('movies starred and saved to watch later', async () => {
   await waitFor(() => {
     expect(starMovieLink).toBeInTheDocument()
   })
-  await userEvent.click(starMovieLink)
+
+  fireEvent.click(starMovieLink)
   await waitFor(() => {
     expect(screen.getByTestId('star-fill')).toBeInTheDocument()
   })
@@ -26,7 +27,8 @@ it('movies starred and saved to watch later', async () => {
   await waitFor(() => {
     expect(watchLaterLink).toBeInTheDocument()
   })
-  await userEvent.click(watchLaterLink)
+
+  fireEvent.click(watchLaterLink)
   await waitFor(() => {
     expect(screen.getByTestId('remove-watch-later')).toBeInTheDocument()
   })

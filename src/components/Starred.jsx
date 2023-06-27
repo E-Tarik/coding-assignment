@@ -1,27 +1,16 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import starredSlice from '../data/starredSlice'
-import Movie from './Movie'
+
 import '../styles/starred.scss'
 
-function Starred ({ viewTrailer }) {
-  const state = useSelector((state) => state)
-  const { starred } = state
-  const { clearAllStarred } = starredSlice.actions
-  const dispatch = useDispatch()
-
-  const onClearStarred = useCallback(() => {
-    dispatch(clearAllStarred())
-  }, [dispatch, clearAllStarred])
-
+function Starred ({ children, starredCount, onRemoveAll }) {
   return (
     <div
       className="starred"
       data-testid="starred"
     >
-      {starred.starredMovies.length > 0 && (
+      {starredCount > 0 && (
         <div
           className="starred-movies"
           data-testid="starred-movies"
@@ -31,19 +20,13 @@ function Starred ({ viewTrailer }) {
           </h6>
 
           <div className="row">
-            {starred.starredMovies.map((movie) => (
-              <Movie
-                key={movie.id}
-                movie={movie}
-                viewTrailer={viewTrailer}
-              />
-            ))}
+            {children}
           </div>
 
           <footer className="text-center">
             <button
               className="btn btn-primary"
-              onClick={onClearStarred}
+              onClick={onRemoveAll}
               type="button"
             >
               Remove all starred
@@ -51,7 +34,7 @@ function Starred ({ viewTrailer }) {
           </footer>
         </div>)}
 
-      {starred.starredMovies.length === 0 && (
+      {starredCount === 0 && (
         <div className="text-center empty-cart">
           <i className="bi bi-star" />
 
@@ -72,7 +55,12 @@ function Starred ({ viewTrailer }) {
 }
 
 Starred.propTypes = {
-  viewTrailer: PropTypes.func.isRequired
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired,
+  onRemoveAll: PropTypes.func.isRequired,
+  starredCount: PropTypes.number.isRequired
 }
 
 export default Starred

@@ -1,27 +1,15 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import watchLaterSlice from '../data/watchLaterSlice'
-import Movie from './Movie'
 import '../styles/starred.scss'
 
-function WatchLater ({ viewTrailer }) {
-  const state = useSelector((state) => state)
-  const { watchLater } = state
-  const { removeAllWatchLater } = watchLaterSlice.actions
-  const dispatch = useDispatch()
-
-  const onRemoveAllWatchLater = useCallback(() => {
-    dispatch(removeAllWatchLater())
-  }, [dispatch, removeAllWatchLater])
-
+function WatchLater ({ children, watchLaterCount, onRemoveAll }) {
   return (
     <div
       className="starred"
       data-testid="watch-later-div"
     >
-      {watchLater.watchLaterMovies.length > 0 && (
+      {watchLaterCount > 0 && (
         <div
           className="starred-movies"
           data-testid="watch-later-movies"
@@ -31,19 +19,13 @@ function WatchLater ({ viewTrailer }) {
           </h6>
 
           <div className="row">
-            {watchLater.watchLaterMovies.map((movie) => (
-              <Movie
-                key={movie.id}
-                movie={movie}
-                viewTrailer={viewTrailer}
-              />
-            ))}
+            {children}
           </div>
 
           <footer className="text-center">
             <button
               className="btn btn-primary"
-              onClick={onRemoveAllWatchLater}
+              onClick={onRemoveAll}
               type="button"
             >
               Empty list
@@ -52,7 +34,7 @@ function WatchLater ({ viewTrailer }) {
         </div>
       )}
 
-      {watchLater.watchLaterMovies.length === 0 && (
+      {watchLaterCount === 0 && (
         <div className="text-center empty-cart">
           <i className="bi bi-heart" />
 
@@ -73,7 +55,12 @@ function WatchLater ({ viewTrailer }) {
 }
 
 WatchLater.propTypes = {
-  viewTrailer: PropTypes.func.isRequired
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired,
+  onRemoveAll: PropTypes.func.isRequired,
+  watchLaterCount: PropTypes.number.isRequired
 }
 
 export default WatchLater

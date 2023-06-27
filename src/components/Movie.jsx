@@ -1,20 +1,15 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
-import starredSlice from '../data/starredSlice'
-import watchLaterSlice from '../data/watchLaterSlice'
 import placeholder from '../assets/not-found-500X750.jpeg'
 
-function Movie ({ movie, viewTrailer, isStarred, isSavedToWatchLater }) {
-  const { starMovie, unstarMovie } = starredSlice.actions
-  const { addToWatchLater, removeFromWatchLater } = watchLaterSlice.actions
+function Movie ({ movie, viewTrailer, isStarred, isSavedToWatch, onStarClick, onWatchLaterButtonClick }) {
+  const onStar = useCallback(() => {
+    onStarClick(movie)
+  }, [onStarClick, movie])
 
-  const movieDataToRender = {
-    ...movie,
-    release_date: movie.release_date?.substring?.(0, 4)
-  }
-
-  const dispatch = useDispatch()
+  const onWatchLater = useCallback(() => {
+    onWatchLaterButtonClick(movie)
+  }, [onWatchLaterButtonClick, movie])
 
   const onCardOpened = useCallback((event) => {
     event.currentTarget.classList.add('opened')
@@ -27,16 +22,6 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatchLater }) {
   const onViewTrailer = useCallback(() => {
     viewTrailer(movie)
   }, [viewTrailer, movie])
-
-  const onStarClick = useCallback(() => {
-    const action = isStarred ? unstarMovie : starMovie
-    dispatch(action(movieDataToRender))
-  }, [dispatch, starMovie, unstarMovie, isStarred, movieDataToRender])
-
-  const onWatchLaterButtonClick = useCallback(() => {
-    const action = isSavedToWatchLater ? removeFromWatchLater : addToWatchLater
-    dispatch(action(movieDataToRender))
-  }, [dispatch, addToWatchLater, removeFromWatchLater, movieDataToRender, isSavedToWatchLater])
 
   return (
     <div className="wrapper col-3 col-sm-4 col-md-3 col-lg-3 col-xl-2">
@@ -53,13 +38,13 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatchLater }) {
             </div>
 
             <div className="year">
-              {movieDataToRender.release_date}
+              {movie.releaseDate}
             </div>
 
             <span
               className="btn-star"
               data-testid={isStarred ? 'unstar-link' : 'starred-link'}
-              onClick={onStarClick}
+              onClick={onStar}
             >
               <i
                 className={`bi bi-star${isStarred ? '-fill' : ''}`}
@@ -68,12 +53,12 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatchLater }) {
             </span>
 
             <button
-              className={`btn btn-light btn-watch-later${isSavedToWatchLater ? ' blue' : ''}`}
-              data-testid={isSavedToWatchLater ? 'remove-watch-later' : 'watch-later'}
-              onClick={onWatchLaterButtonClick}
+              className={`btn btn-light btn-watch-later${isSavedToWatch ? ' blue' : ''}`}
+              data-testid={isSavedToWatch ? 'remove-watch-later' : 'watch-later'}
+              onClick={onWatchLater}
               type="button"
             >
-              {isSavedToWatchLater
+              {isSavedToWatch
                 ? (
                   <i className="bi bi-check" />
                 )
@@ -92,7 +77,7 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatchLater }) {
           <img
             alt="Movie poster"
             className="center-block"
-            src={(movie.poster_path) ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : placeholder}
+            src={(movie.posterPath) ? `https://image.tmdb.org/t/p/w500/${movie.posterPath}` : placeholder}
           />
         </div>
 
@@ -120,21 +105,18 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatchLater }) {
 }
 
 Movie.propTypes = {
-  isSavedToWatchLater: PropTypes.bool,
-  isStarred: PropTypes.bool,
+  isSavedToWatch: PropTypes.bool.isRequired,
+  isStarred: PropTypes.bool.isRequired,
   movie: PropTypes.shape({
     id: PropTypes.number,
     overview: PropTypes.string,
-    release_date: PropTypes.string,
-    poster_path: PropTypes.string,
+    releaseDate: PropTypes.string,
+    posterPath: PropTypes.string,
     title: PropTypes.string
   }).isRequired,
+  onStarClick: PropTypes.func.isRequired,
+  onWatchLaterButtonClick: PropTypes.func.isRequired,
   viewTrailer: PropTypes.func.isRequired
-}
-
-Movie.defaultProps = {
-  isSavedToWatchLater: false,
-  isStarred: false
 }
 
 export default Movie

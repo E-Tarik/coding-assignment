@@ -8,13 +8,21 @@ export const fetchMovies = createAsyncThunk('fetch-movies', async (apiUrl) => {
 const moviesSlice = createSlice({
   name: 'movies',
   initialState: {
-    movies: {},
+    list: [],
     fetchStatus: ''
   },
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
-      state.movies = action.payload
+      state.list = action.payload.results.map((movie) => {
+        return {
+          id: movie.id,
+          title: movie.title,
+          overview: movie.overview,
+          releaseDate: movie.release_date.substring(0, 4),
+          posterPath: movie.poster_path
+        }
+      })
       state.fetchStatus = 'success'
     }).addCase(fetchMovies.pending, (state) => {
       state.fetchStatus = 'loading'

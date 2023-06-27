@@ -6,7 +6,8 @@ describe('MovieSlice test', () => {
     const action = { type: fetchMovies.pending }
     const initialState = moviesSlice.reducer(
       {
-        movies: [], fetchStatus: ''
+        map: {},
+        fetchStatus: '',
       }, action)
     expect(action).toEqual({ type: fetchMovies.pending })
   })
@@ -14,11 +15,12 @@ describe('MovieSlice test', () => {
   it('should return payload when action is fulfilled', () => {
     const action = {
       type: fetchMovies.fulfilled,
-      payload: moviesMock
+      payload: { page: 1, results: moviesMock }
     }
     const initialState = moviesSlice.reducer(
       {
-        movies: [], fetchStatus: ''
+        map: {},
+        fetchStatus: '',
       }, action)
     expect(action.payload).toBeTruthy()
   })
@@ -27,7 +29,8 @@ describe('MovieSlice test', () => {
     const action = { type: fetchMovies.rejected }
     const initialState = moviesSlice.reducer(
       {
-        movies: [], fetchStatus: ''
+        map: {},
+        fetchStatus: '',
       }, action)
     expect(action).toEqual({ type: fetchMovies.rejected })
   })
