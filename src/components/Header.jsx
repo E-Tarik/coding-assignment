@@ -1,10 +1,14 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Link, NavLink } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import '../styles/header.scss'
 
-function Header ({ searchMovies, starredCount }) {
+function Header ({ searchMovies }) {
+  const starredList = useSelector((state) => state.starred.starredMovies)
+  const starredCount = starredList.length
+
   const onClick = useCallback((event) => {
     searchMovies(event.currentTarget.value)
   }, [searchMovies])
@@ -51,36 +55,22 @@ function Header ({ searchMovies, starredCount }) {
       </nav>
 
       <div className="input-group rounded">
-        {/* <Link
-          className="search-link"
-          onClick={resetMovies}
-          to="/"
-        > */}
-
         <input
           aria-describedby="search-addon"
           aria-label="Search movies"
           className="form-control rounded"
           data-testid="search-movies"
           onChange={onClick}
-          // onKeyUp={onClick}
           placeholder="Search movies..."
           type="search"
         />
-
-        {/* </Link> */}
       </div>
     </header>
   )
 }
 
 Header.propTypes = {
-  searchMovies: PropTypes.func.isRequired,
-  starredCount: PropTypes.number
-}
-
-Header.defaultProps = {
-  starredCount: 0
+  searchMovies: PropTypes.func.isRequired
 }
 
 export default Header

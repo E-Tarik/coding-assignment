@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import Movies from './Movies'
+import watchLaterSlice from '../data/watchLaterSlice'
 import '../styles/starred.scss'
 
-function WatchLater ({ children, watchLaterCount, onRemoveAll }) {
+const { removeAllWatchLater } = watchLaterSlice.actions
+
+function WatchLater ({ viewTrailer, onCloseCard }) {
+  const watchLaterList = useSelector((state) => state.watchLater.watchLaterMovies)
+
+  const watchLaterCount = watchLaterList.length
+
+  const dispatch = useDispatch()
+
+  const onRemoveAllWatchLater = useCallback(() => {
+    dispatch(removeAllWatchLater())
+  }, [dispatch])
+
   return (
     <div
       className="starred"
@@ -19,13 +34,17 @@ function WatchLater ({ children, watchLaterCount, onRemoveAll }) {
           </h6>
 
           <div className="row">
-            {children}
+            <Movies
+              closeCard={onCloseCard}
+              movies={watchLaterList}
+              viewTrailer={viewTrailer}
+            />
           </div>
 
           <footer className="text-center">
             <button
               className="btn btn-primary"
-              onClick={onRemoveAll}
+              onClick={onRemoveAllWatchLater}
               type="button"
             >
               Empty list
@@ -55,12 +74,8 @@ function WatchLater ({ children, watchLaterCount, onRemoveAll }) {
 }
 
 WatchLater.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]).isRequired,
-  onRemoveAll: PropTypes.func.isRequired,
-  watchLaterCount: PropTypes.number.isRequired
+  onCloseCard: PropTypes.func.isRequired,
+  viewTrailer: PropTypes.func.isRequired
 }
 
 export default WatchLater

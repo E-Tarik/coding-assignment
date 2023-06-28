@@ -1,11 +1,36 @@
-import React from 'react'
+import React, { useMemo, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import Movie from './Movie'
+import { useDispatch, useSelector } from 'react-redux'
+import watchLaterSlice from '../data/watchLaterSlice'
+import starredSlice from '../data/starredSlice'
 import '../styles/movies.scss'
 
-function Movies ({ movies, viewTrailer, closeCard, starredIds, watchLaterIds, onStarClick, onWatchLaterButtonClick }) {
+const { toggleWatchLater } = watchLaterSlice.actions
+const { toggleStar } = starredSlice.actions
+
+function Movies ({ movies, viewTrailer, closeCard }) {
+  const starredList = useSelector((state) => state.starred.starredMovies)
+  const watchLaterList = useSelector((state) => state.watchLater.watchLaterMovies)
+
+  const dispatch = useDispatch()
+
+  const starredIds = useMemo(() => starredList.map(movie => movie.id), [starredList])
+  const watchLaterIds = useMemo(() => watchLaterList.map(movie => movie.id), [watchLaterList])
+
+  const onStarClick = useCallback((movie) => {
+    dispatch(toggleStar(movie))
+  }, [dispatch])
+
+  const onWatchLaterButtonClick = useCallback((movie) => {
+    dispatch(toggleWatchLater(movie))
+  }, [dispatch])
+
   return (
-    <div data-testid="movies">
+    <div
+      className="movies-grid"
+      data-testid="movies"
+    >
       {movies.map((movie) => (
         <Movie
           closeCard={closeCard}
@@ -31,11 +56,7 @@ Movies.propTypes = {
     posterPath: PropTypes.string,
     title: PropTypes.string
   })).isRequired,
-  onStarClick: PropTypes.func.isRequired,
-  onWatchLaterButtonClick: PropTypes.func.isRequired,
-  starredIds: PropTypes.arrayOf(PropTypes.number).isRequired,
-  viewTrailer: PropTypes.func.isRequired,
-  watchLaterIds: PropTypes.arrayOf(PropTypes.number).isRequired
+  viewTrailer: PropTypes.func.isRequired
 }
 
 export default Movies

@@ -1,31 +1,18 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Routes, Route, createSearchParams, useSearchParams, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import 'reactjs-popup/dist/index.css'
 import { fetchMovies } from './data/moviesSlice'
-import watchLaterSlice from './data/watchLaterSlice'
-import starredSlice from './data/starredSlice'
 import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER, ENDPOINT, API_KEY } from './constants'
 import Header from './components/Header'
-import Movies from './components/Movies'
 import Starred from './components/Starred'
 import WatchLater from './components/WatchLater'
+import Home from './components/Home'
 import YouTubePlayer from './components/YoutubePlayer'
 
 import './app.scss'
 
-const { removeAllWatchLater, toggleWatchLater } = watchLaterSlice.actions
-const { clearAllStarred, toggleStar } = starredSlice.actions
-
 function App () {
-  const moviesList = useSelector((state) => state.movies.list)
-  const starredList = useSelector((state) => state.starred.starredMovies)
-  const watchLaterList = useSelector((state) => state.watchLater.watchLaterMovies)
-
-  const starredCount = starredList.length
-
-  const starredIds = useMemo(() => starredList.map(movie => movie.id), [starredList])
-  const watchLaterIds = useMemo(() => watchLaterList.map(movie => movie.id), [watchLaterList])
   const dispatch = useDispatch()
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -34,28 +21,11 @@ function App () {
   const [isOpened, setIsOpened] = useState()
   const navigate = useNavigate()
 
-  const onRemoveAllWatchLater = useCallback(() => {
-    dispatch(removeAllWatchLater())
-  }, [dispatch])
-
-  const onClearStarred = useCallback(() => {
-    dispatch(clearAllStarred())
-  }, [dispatch])
-
-  const onStarClick = useCallback((movie) => {
-    dispatch(toggleStar(movie))
-  }, [dispatch])
-
-  const onWatchLaterButtonClick = useCallback((movie) => {
-    dispatch(toggleWatchLater(movie))
-  }, [dispatch])
-
   const closeCard = useCallback(() => {
     console.log('On card close', isOpened)
   })
 
   const getSearchResults = (query) => {
-    console.log('----getSearchResults-------', query)
     if (query !== '') {
       dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=` + query))
       setSearchParams(createSearchParams({ search: query }))
@@ -105,7 +75,6 @@ function App () {
     <div className="App">
       <Header
         searchMovies={searchMovies}
-        starredCount={starredCount}
       />
 
       <div className="container">
@@ -126,14 +95,9 @@ function App () {
         <Routes>
           <Route
             element={(
-              <Movies
-                closeCard={closeCard}
-                movies={moviesList}
-                onStarClick={onStarClick}
-                onWatchLaterButtonClick={onWatchLaterButtonClick}
-                starredIds={starredIds}
+              <Home
+                onCloseCard={closeCard}
                 viewTrailer={viewTrailer}
-                watchLaterIds={watchLaterIds}
               />
             )}
             path="/"
@@ -142,19 +106,9 @@ function App () {
           <Route
             element={(
               <Starred
-                onRemoveAll={onClearStarred}
-                starredCount={starredList.length}
-              >
-                <Movies
-                  closeCard={closeCard}
-                  movies={starredList}
-                  onStarClick={onStarClick}
-                  onWatchLaterButtonClick={onWatchLaterButtonClick}
-                  starredIds={starredIds}
-                  viewTrailer={viewTrailer}
-                  watchLaterIds={watchLaterIds}
-                />
-              </Starred>
+                onCloseCard={closeCard}
+                viewTrailer={viewTrailer}
+              />
             )}
             path="/starred"
           />
@@ -162,19 +116,9 @@ function App () {
           <Route
             element={(
               <WatchLater
-                onRemoveAll={onRemoveAllWatchLater}
-                watchLaterCount={watchLaterList.length}
-              >
-                <Movies
-                  closeCard={closeCard}
-                  movies={watchLaterList}
-                  onStarClick={onStarClick}
-                  onWatchLaterButtonClick={onWatchLaterButtonClick}
-                  starredIds={starredIds}
-                  viewTrailer={viewTrailer}
-                  watchLaterIds={watchLaterIds}
-                />
-              </WatchLater>
+                onCloseCard={closeCard}
+                viewTrailer={viewTrailer}
+              />
             )}
             path="/watch-later"
           />
