@@ -27,7 +27,10 @@ function Movies ({ movies, viewTrailer, closeCard }) {
   }, [dispatch])
 
   return (
-    <div data-testid="movies">
+    <div
+      className="movies-grid"
+      data-testid="movies"
+    >
       {movies.map((movie) => (
         <Movie
           closeCard={closeCard}

@@ -24,7 +24,7 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatch, onStarClick, on
   }, [viewTrailer, movie])
 
   return (
-    <div className="wrapper col-3 col-sm-4 col-md-3 col-lg-3 col-xl-2">
+    <div className="wrapper col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
       <div
         className="card"
         onClick={onCardOpened}
