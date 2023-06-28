@@ -51,21 +51,24 @@ function Header ({ searchMovies, starredCount }) {
       </nav>
 
       <div className="input-group rounded">
-        <Link
+        {/* <Link
           className="search-link"
           onClick={resetMovies}
           to="/"
-        >
-          <input
-            aria-describedby="search-addon"
-            aria-label="Search movies"
-            className="form-control rounded"
-            data-testid="search-movies"
-            onKeyUp={onClick}
-            placeholder="Search movies..."
-            type="search"
-          />
-        </Link>
+        > */}
+
+        <input
+          aria-describedby="search-addon"
+          aria-label="Search movies"
+          className="form-control rounded"
+          data-testid="search-movies"
+          onChange={onClick}
+          // onKeyUp={onClick}
+          placeholder="Search movies..."
+          type="search"
+        />
+
+        {/* </Link> */}
       </div>
     </header>
   )

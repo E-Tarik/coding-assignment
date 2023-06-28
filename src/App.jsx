@@ -11,6 +11,7 @@ import Movies from './components/Movies'
 import Starred from './components/Starred'
 import WatchLater from './components/WatchLater'
 import YouTubePlayer from './components/YoutubePlayer'
+
 import './app.scss'
 
 const { removeAllWatchLater, toggleWatchLater } = watchLaterSlice.actions
@@ -25,7 +26,6 @@ function App () {
 
   const starredIds = useMemo(() => starredList.map(movie => movie.id), [starredList])
   const watchLaterIds = useMemo(() => watchLaterList.map(movie => movie.id), [watchLaterList])
-
   const dispatch = useDispatch()
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -55,6 +55,7 @@ function App () {
   })
 
   const getSearchResults = (query) => {
+    console.log('----getSearchResults-------', query)
     if (query !== '') {
       dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=` + query))
       setSearchParams(createSearchParams({ search: query }))
@@ -67,7 +68,7 @@ function App () {
   const searchMovies = useCallback((query) => {
     navigate('/')
     getSearchResults(query)
-  }, [navigate, getSearchResults])
+  }, [getSearchResults])
 
   const getMovies = () => {
     if (searchQuery) {
