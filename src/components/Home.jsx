@@ -4,12 +4,11 @@ import Movies from './Movies'
 import { useSelector } from 'react-redux'
 import '../styles/starred.scss'
 
-function Home ({ viewTrailer, onCloseCard }) {
+function Home ({ viewTrailer }) {
   const moviesList = useSelector((state) => state.movies.list)
 
   return (
     <Movies
-      closeCard={onCloseCard}
       movies={moviesList}
       viewTrailer={viewTrailer}
     />
@@ -17,7 +16,6 @@ function Home ({ viewTrailer, onCloseCard }) {
 }
 
 Home.propTypes = {
-  onCloseCard: PropTypes.func.isRequired,
   viewTrailer: PropTypes.func.isRequired
 }
 

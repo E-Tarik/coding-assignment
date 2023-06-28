@@ -8,7 +8,7 @@ import '../styles/starred.scss'
 
 const { clearAllStarred } = starredSlice.actions
 
-function Starred ({ viewTrailer, onCloseCard }) {
+function Starred ({ viewTrailer }) {
   const starredList = useSelector((state) => state.starred.starredMovies)
 
   const dispatch = useDispatch()
@@ -35,7 +35,6 @@ function Starred ({ viewTrailer, onCloseCard }) {
 
           <div className="row">
             <Movies
-              closeCard={onCloseCard}
               movies={starredList}
               viewTrailer={viewTrailer}
             />
@@ -73,7 +72,6 @@ function Starred ({ viewTrailer, onCloseCard }) {
 }
 
 Starred.propTypes = {
-  onCloseCard: PropTypes.func.isRequired,
   viewTrailer: PropTypes.func.isRequired
 }
 

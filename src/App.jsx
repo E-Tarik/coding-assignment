@@ -17,12 +17,9 @@ function App () {
   const [searchParams, setSearchParams] = useSearchParams()
   const searchQuery = searchParams.get('search')
   const [videoKey, setVideoKey] = useState()
-  const [isOpened, setIsOpened] = useState()
+  // eslint-disable-next-line react/hook-use-state
+  const [, setIsOpened] = useState()
   const navigate = useNavigate()
-
-  const closeCard = useCallback(() => {
-    console.log('On card close', isOpened)
-  })
 
   const getSearchResults = (query) => {
     if (query !== '') {
@@ -95,7 +92,6 @@ function App () {
           <Route
             element={(
               <Home
-                onCloseCard={closeCard}
                 viewTrailer={viewTrailer}
               />
             )}
@@ -105,7 +101,6 @@ function App () {
           <Route
             element={(
               <Starred
-                onCloseCard={closeCard}
                 viewTrailer={viewTrailer}
               />
             )}
@@ -115,7 +110,6 @@ function App () {
           <Route
             element={(
               <WatchLater
-                onCloseCard={closeCard}
                 viewTrailer={viewTrailer}
               />
             )}
