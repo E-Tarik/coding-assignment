@@ -1,13 +1,18 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import '../styles/header.scss'
 
 function Header ({ searchMovies }) {
+  const navigate = useNavigate()
   const starredList = useSelector((state) => state.starred.starredMovies)
   const starredCount = starredList.length
+
+  const onFocus = useCallback(() => {
+    navigate('/')
+  }, [])
 
   const onClick = useCallback((event) => {
     searchMovies(event.currentTarget.value)
@@ -61,6 +66,7 @@ function Header ({ searchMovies }) {
           className="form-control rounded"
           data-testid="search-movies"
           onChange={onClick}
+          onFocus={onFocus}
           placeholder="Search movies..."
           type="search"
         />
