@@ -9,7 +9,7 @@ import '../styles/movies.scss'
 const { toggleWatchLater } = watchLaterSlice.actions
 const { toggleStar } = starredSlice.actions
 
-function Movies ({ movies, viewTrailer, closeCard }) {
+function Movies ({ movies, viewTrailer }) {
   const starredList = useSelector((state) => state.starred.starredMovies)
   const watchLaterList = useSelector((state) => state.watchLater.watchLaterMovies)
 
@@ -33,7 +33,6 @@ function Movies ({ movies, viewTrailer, closeCard }) {
     >
       {movies.map((movie) => (
         <Movie
-          closeCard={closeCard}
           isSavedToWatch={watchLaterIds.includes(movie.id)}
           isStarred={starredIds.includes(movie.id)}
           key={movie.id}
@@ -48,7 +47,6 @@ function Movies ({ movies, viewTrailer, closeCard }) {
 }
 
 Movies.propTypes = {
-  closeCard: PropTypes.func.isRequired,
   movies: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number,
     overview: PropTypes.string,

@@ -8,7 +8,7 @@ import '../styles/starred.scss'
 
 const { removeAllWatchLater } = watchLaterSlice.actions
 
-function WatchLater ({ viewTrailer, onCloseCard }) {
+function WatchLater ({ viewTrailer }) {
   const watchLaterList = useSelector((state) => state.watchLater.watchLaterMovies)
 
   const watchLaterCount = watchLaterList.length
@@ -35,7 +35,6 @@ function WatchLater ({ viewTrailer, onCloseCard }) {
 
           <div className="row">
             <Movies
-              closeCard={onCloseCard}
               movies={watchLaterList}
               viewTrailer={viewTrailer}
             />
@@ -74,7 +73,6 @@ function WatchLater ({ viewTrailer, onCloseCard }) {
 }
 
 WatchLater.propTypes = {
-  onCloseCard: PropTypes.func.isRequired,
   viewTrailer: PropTypes.func.isRequired
 }
 

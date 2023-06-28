@@ -1,8 +1,10 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import placeholder from '../assets/not-found-500X750.jpeg'
 
 function Movie ({ movie, viewTrailer, isStarred, isSavedToWatch, onStarClick, onWatchLaterButtonClick }) {
+  const [opened, setOpened] = useState(false)
+
   const onStar = useCallback(() => {
     onStarClick(movie)
   }, [onStarClick, movie])
@@ -11,12 +13,13 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatch, onStarClick, on
     onWatchLaterButtonClick(movie)
   }, [onWatchLaterButtonClick, movie])
 
-  const onCardOpened = useCallback((event) => {
-    event.currentTarget.classList.add('opened')
+  const onCardOpened = useCallback(() => {
+    setOpened(true)
   })
 
   const onCardClose = useCallback((event) => {
-    event.target.parentElement.parentElement.classList.remove('opened')
+    event.stopPropagation()
+    setOpened(false)
   })
 
   const onViewTrailer = useCallback(() => {
@@ -26,7 +29,7 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatch, onStarClick, on
   return (
     <div className="wrapper col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
       <div
-        className="card"
+        className={`card${opened ? ' opened' : ''}`}
         onClick={onCardOpened}
       >
         <div className="card-body text-center">
