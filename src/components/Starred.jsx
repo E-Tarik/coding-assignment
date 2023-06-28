@@ -1,10 +1,24 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-
+import Movies from './Movies'
+import { useDispatch, useSelector } from 'react-redux'
+import starredSlice from '../data/starredSlice'
 import '../styles/starred.scss'
 
-function Starred ({ children, starredCount, onRemoveAll }) {
+const { clearAllStarred } = starredSlice.actions
+
+function Starred ({ viewTrailer, onCloseCard }) {
+  const starredList = useSelector((state) => state.starred.starredMovies)
+
+  const dispatch = useDispatch()
+
+  const starredCount = starredList.length
+
+  const onClearStarred = useCallback(() => {
+    dispatch(clearAllStarred())
+  }, [dispatch])
+
   return (
     <div
       className="starred"
@@ -20,13 +34,17 @@ function Starred ({ children, starredCount, onRemoveAll }) {
           </h6>
 
           <div className="row">
-            {children}
+            <Movies
+              closeCard={onCloseCard}
+              movies={starredList}
+              viewTrailer={viewTrailer}
+            />
           </div>
 
           <footer className="text-center">
             <button
               className="btn btn-primary"
-              onClick={onRemoveAll}
+              onClick={onClearStarred}
               type="button"
             >
               Remove all starred
@@ -55,12 +73,8 @@ function Starred ({ children, starredCount, onRemoveAll }) {
 }
 
 Starred.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]).isRequired,
-  onRemoveAll: PropTypes.func.isRequired,
-  starredCount: PropTypes.number.isRequired
+  onCloseCard: PropTypes.func.isRequired,
+  viewTrailer: PropTypes.func.isRequired
 }
 
 export default Starred
