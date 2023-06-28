@@ -1,17 +1,27 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, memo } from 'react'
 import PropTypes from 'prop-types'
+import watchLaterSlice from '../data/watchLaterSlice'
+import starredSlice from '../data/starredSlice'
+import playerSlice from '../data/playerSlice'
+import { useDispatch } from 'react-redux'
 import placeholder from '../assets/not-found-500X750.jpeg'
 
-function Movie ({ movie, viewTrailer, isStarred, isSavedToWatch, onStarClick, onWatchLaterButtonClick }) {
+const { toggleWatchLater } = watchLaterSlice.actions
+const { toggleStar } = starredSlice.actions
+const { setCurrentMovieId } = playerSlice.actions
+
+function Movie ({ movie, isStarred, isSavedToWatch }) {
   const [opened, setOpened] = useState(false)
 
-  const onStar = useCallback(() => {
-    onStarClick(movie)
-  }, [onStarClick, movie])
+  const dispatch = useDispatch()
 
-  const onWatchLater = useCallback(() => {
-    onWatchLaterButtonClick(movie)
-  }, [onWatchLaterButtonClick, movie])
+  const onStarClick = useCallback(() => {
+    dispatch(toggleStar(movie))
+  }, [dispatch, toggleStar, movie])
+
+  const onWatchLaterButtonClick = useCallback(() => {
+    dispatch(toggleWatchLater(movie))
+  }, [dispatch, toggleWatchLater, movie])
 
   const onCardOpened = useCallback(() => {
     setOpened(true)
@@ -23,8 +33,8 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatch, onStarClick, on
   })
 
   const onViewTrailer = useCallback(() => {
-    viewTrailer(movie)
-  }, [viewTrailer, movie])
+    dispatch(setCurrentMovieId(movie.id))
+  }, [dispatch, setCurrentMovieId, movie])
 
   return (
     <div className="wrapper col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
@@ -47,7 +57,7 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatch, onStarClick, on
             <span
               className="btn-star"
               data-testid={isStarred ? 'unstar-link' : 'starred-link'}
-              onClick={onStar}
+              onClick={onStarClick}
             >
               <i
                 className={`bi bi-star${isStarred ? '-fill' : ''}`}
@@ -58,7 +68,7 @@ function Movie ({ movie, viewTrailer, isStarred, isSavedToWatch, onStarClick, on
             <button
               className={`btn btn-light btn-watch-later${isSavedToWatch ? ' blue' : ''}`}
               data-testid={isSavedToWatch ? 'remove-watch-later' : 'watch-later'}
-              onClick={onWatchLater}
+              onClick={onWatchLaterButtonClick}
               type="button"
             >
               {isSavedToWatch
@@ -116,10 +126,7 @@ Movie.propTypes = {
     releaseDate: PropTypes.string,
     posterPath: PropTypes.string,
     title: PropTypes.string
-  }).isRequired,
-  onStarClick: PropTypes.func.isRequired,
-  onWatchLaterButtonClick: PropTypes.func.isRequired,
-  viewTrailer: PropTypes.func.isRequired
+  }).isRequired
 }
 
-export default Movie
+export default memo(Movie)

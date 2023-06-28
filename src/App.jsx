@@ -1,15 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { Routes, Route, createSearchParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import 'reactjs-popup/dist/index.css'
 import { fetchMovies } from './data/moviesSlice'
-import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER, ENDPOINT, API_KEY } from './constants'
+import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER } from './constants'
 import Header from './components/Header'
 import Starred from './components/Starred'
 import WatchLater from './components/WatchLater'
 import Home from './components/Home'
-import YouTubePlayer from './components/YoutubePlayer'
-
+import PlayerModal from './components/PlayerModal'
 import './app.scss'
 
 function App () {
@@ -17,9 +16,6 @@ function App () {
 
   const [searchParams, setSearchParams] = useSearchParams()
   const searchQuery = searchParams.get('search')
-  const [videoKey, setVideoKey] = useState()
-  // eslint-disable-next-line react/hook-use-state
-  const [, setIsOpened] = useState()
   const navigate = useNavigate()
 
   const getSearchResults = (query) => {
@@ -45,25 +41,6 @@ function App () {
     }
   }
 
-  const getMovie = async (id) => {
-    const URL = `${ENDPOINT}/movie/${id}?api_key=${API_KEY}&append_to_response=videos`
-
-    setVideoKey(null)
-    const videoData = await fetch(URL)
-      .then((response) => response.json())
-
-    if (videoData.videos && videoData.videos.results.length) {
-      const trailer = videoData.videos.results.find(vid => vid.type === 'Trailer')
-      setVideoKey(trailer ? trailer.key : videoData.videos.results[0].key)
-    }
-  }
-
-  const viewTrailer = useCallback((movie) => {
-    getMovie(movie.id)
-    if (!videoKey) setIsOpened(true)
-    setIsOpened(true)
-  }, [getMovie, setIsOpened])
-
   useEffect(() => {
     getMovies()
   }, [])
@@ -75,45 +52,19 @@ function App () {
       />
 
       <div className="container">
-        {videoKey
-          ? (
-            <YouTubePlayer
-              videoKey={videoKey}
-            />
-          )
-          : (
-            <div style={{ padding: '30px' }}>
-              <h6>
-                no trailer available. Try another movie
-              </h6>
-            </div>
-          )}
-
         <Routes>
           <Route
-            element={(
-              <Home
-                viewTrailer={viewTrailer}
-              />
-            )}
+            element={<Home />}
             path="/"
           />
 
           <Route
-            element={(
-              <Starred
-                viewTrailer={viewTrailer}
-              />
-            )}
+            element={<Starred />}
             path="/starred"
           />
 
           <Route
-            element={(
-              <WatchLater
-                viewTrailer={viewTrailer}
-              />
-            )}
+            element={<WatchLater />}
             path="/watch-later"
           />
 
@@ -127,6 +78,8 @@ function App () {
           />
         </Routes>
       </div>
+
+      <PlayerModal />
     </div>
   )
 }

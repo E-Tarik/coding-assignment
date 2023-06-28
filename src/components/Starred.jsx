@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import Movies from './Movies'
 import { useDispatch, useSelector } from 'react-redux'
@@ -8,7 +7,7 @@ import '../styles/starred.scss'
 
 const { clearAllStarred } = starredSlice.actions
 
-function Starred ({ viewTrailer }) {
+function Starred () {
   const starredList = useSelector((state) => state.starred.starredMovies)
 
   const dispatch = useDispatch()
@@ -36,7 +35,6 @@ function Starred ({ viewTrailer }) {
           <div className="row">
             <Movies
               movies={starredList}
-              viewTrailer={viewTrailer}
             />
           </div>
 
@@ -69,10 +67,6 @@ function Starred ({ viewTrailer }) {
       )}
     </div>
   )
-}
-
-Starred.propTypes = {
-  viewTrailer: PropTypes.func.isRequired
 }
 
 export default Starred

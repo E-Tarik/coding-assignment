@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import Movies from './Movies'
@@ -8,7 +7,7 @@ import '../styles/starred.scss'
 
 const { removeAllWatchLater } = watchLaterSlice.actions
 
-function WatchLater ({ viewTrailer }) {
+function WatchLater () {
   const watchLaterList = useSelector((state) => state.watchLater.watchLaterMovies)
 
   const watchLaterCount = watchLaterList.length
@@ -36,7 +35,6 @@ function WatchLater ({ viewTrailer }) {
           <div className="row">
             <Movies
               movies={watchLaterList}
-              viewTrailer={viewTrailer}
             />
           </div>
 
@@ -70,10 +68,6 @@ function WatchLater ({ viewTrailer }) {
       )}
     </div>
   )
-}
-
-WatchLater.propTypes = {
-  viewTrailer: PropTypes.func.isRequired
 }
 
 export default WatchLater

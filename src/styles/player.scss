@@ -1,0 +1,57 @@
+.player-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+
+    &__backdrop {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .8);
+        backdrop-filter: blur(10px);
+    }
+
+    &__container {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        top: 50%;
+
+        $div-width : 16;
+        $div-height : 9;
+        $ratio: $div-width / $div-height;
+       
+        @media screen and (max-width: (100 * $ratio) + vh) {
+           width: 100vw;
+           height: (100 / $ratio) + vw;
+        }
+       
+        @media screen and (min-width: (100 * $ratio) + vh) {
+           width: (100 * $ratio) + vh;
+           height: 100vh;
+        }
+    }
+
+    &__player {
+        aspect-ratio: 16/9;
+        box-sizing: border-box;
+        padding: 30px;
+    }
+
+    &__close {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        font: 900 30px/30px sans-serif;
+        color: #fff;
+        border: none;
+        background: none;
+    }
+}
+
+.remove-scrolling {
+    overflow: hidden;
+}

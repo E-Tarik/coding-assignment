@@ -1,30 +1,15 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Movie from './Movie'
-import { useDispatch, useSelector } from 'react-redux'
-import watchLaterSlice from '../data/watchLaterSlice'
-import starredSlice from '../data/starredSlice'
+import { useSelector } from 'react-redux'
 import '../styles/movies.scss'
 
-const { toggleWatchLater } = watchLaterSlice.actions
-const { toggleStar } = starredSlice.actions
-
-function Movies ({ movies, viewTrailer }) {
+function Movies ({ movies }) {
   const starredList = useSelector((state) => state.starred.starredMovies)
   const watchLaterList = useSelector((state) => state.watchLater.watchLaterMovies)
 
-  const dispatch = useDispatch()
-
   const starredIds = useMemo(() => starredList.map(movie => movie.id), [starredList])
   const watchLaterIds = useMemo(() => watchLaterList.map(movie => movie.id), [watchLaterList])
-
-  const onStarClick = useCallback((movie) => {
-    dispatch(toggleStar(movie))
-  }, [dispatch])
-
-  const onWatchLaterButtonClick = useCallback((movie) => {
-    dispatch(toggleWatchLater(movie))
-  }, [dispatch])
 
   return (
     <div
@@ -37,9 +22,6 @@ function Movies ({ movies, viewTrailer }) {
           isStarred={starredIds.includes(movie.id)}
           key={movie.id}
           movie={movie}
-          onStarClick={onStarClick}
-          onWatchLaterButtonClick={onWatchLaterButtonClick}
-          viewTrailer={viewTrailer}
         />
       ))}
     </div>
@@ -53,8 +35,7 @@ Movies.propTypes = {
     releaseDate: PropTypes.string,
     posterPath: PropTypes.string,
     title: PropTypes.string
-  })).isRequired,
-  viewTrailer: PropTypes.func.isRequired
+  })).isRequired
 }
 
 export default Movies

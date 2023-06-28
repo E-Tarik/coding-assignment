@@ -8,8 +8,10 @@ function YoutubePlayer ({ videoKey }) {
       className="video-player"
       controls
       data-testid="youtube-player"
+      height="100%"
       playing
       url={`https://www.youtube.com/watch?v=${videoKey}`}
+      width="100%"
     />
   )
 }
