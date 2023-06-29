@@ -29,8 +29,7 @@ function Home () {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line no-undef
-    const observer = new IntersectionObserver(observeMovies, options)
+    const observer = new window.IntersectionObserver(observeMovies, options)
 
     if (moreRef.current) {
       observer.observe(moreRef.current)
@@ -55,7 +54,6 @@ function Home () {
             className="more"
             ref={moreRef}
           >
-            <p className="virtual" />
             loading ...
           </div>
         )

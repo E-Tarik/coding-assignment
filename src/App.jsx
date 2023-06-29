@@ -16,9 +16,7 @@ function App () {
       <div className="container">
         <Routes>
           <Route
-            element={(
-              <Home />
-            )}
+            element={(<Home />)}
             path="/"
           />
 
