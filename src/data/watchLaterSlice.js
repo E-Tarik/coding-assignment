@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const initialState = {
+  watchLaterMovies: []
+}
 const watchLaterSlice = createSlice({
   name: 'watch-later',
   initialState: {
@@ -15,9 +18,7 @@ const watchLaterSlice = createSlice({
         state.watchLaterMovies.splice(indexOfId, 1)
       }
     },
-    removeAllWatchLater: (state) => {
-      state.watchLaterMovies = []
-    }
+    removeAllWatchLater: () => initialState
   }
 })
 

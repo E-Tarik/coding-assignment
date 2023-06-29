@@ -7,7 +7,7 @@ const plyerSlice = createSlice({
   },
   reducers: {
     setCurrentMovieId: (state, action) => {
-      state.currentMovieId = action.payload
+      return { ...state, currentMovieId: action.payload }
     }
   }
 })

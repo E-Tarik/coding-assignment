@@ -1,14 +1,19 @@
 import moviesSlice, { fetchMovies } from '../data/moviesSlice'
 import { moviesMock } from './movies.mocks'
 
+const initialState = {
+  list: [],
+  pagination: {
+    page: 1,
+    totalPages: 1
+  },
+  fetchStatus: ''
+};
+
 describe('MovieSlice test', () => {
   it('should set loading true while action is pending', () => {
     const action = { type: fetchMovies.pending }
-    const initialState = moviesSlice.reducer(
-      {
-        map: {},
-        fetchStatus: '',
-      }, action)
+    moviesSlice.reducer(initialState, action)
     expect(action).toEqual({ type: fetchMovies.pending })
   })
 
@@ -17,21 +22,13 @@ describe('MovieSlice test', () => {
       type: fetchMovies.fulfilled,
       payload: { page: 1, results: moviesMock }
     }
-    const initialState = moviesSlice.reducer(
-      {
-        map: {},
-        fetchStatus: '',
-      }, action)
+    moviesSlice.reducer(initialState, action)
     expect(action.payload).toBeTruthy()
   })
 
   it('should set error when action is rejected', () => {
     const action = { type: fetchMovies.rejected }
-    const initialState = moviesSlice.reducer(
-      {
-        map: {},
-        fetchStatus: '',
-      }, action)
+    moviesSlice.reducer(initialState, action)
     expect(action).toEqual({ type: fetchMovies.rejected })
   })
 })

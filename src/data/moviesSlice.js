@@ -9,12 +9,16 @@ const moviesSlice = createSlice({
   name: 'movies',
   initialState: {
     list: [],
+    pagination: {
+      page: 0,
+      totalPages: 1
+    },
     fetchStatus: ''
   },
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
-      state.list = action.payload.results.map((movie) => {
+      const newMovies = action.payload.results.map((movie) => {
         return {
           id: movie.id,
           title: movie.title,
@@ -23,6 +27,13 @@ const moviesSlice = createSlice({
           posterPath: movie.poster_path
         }
       })
+
+      state.list = [...state.list, ...newMovies]
+
+      state.pagination = {
+        page: action.payload.page,
+        totalPages: action.payload.total_pages
+      }
       state.fetchStatus = 'success'
     }).addCase(fetchMovies.pending, (state) => {
       state.fetchStatus = 'loading'
