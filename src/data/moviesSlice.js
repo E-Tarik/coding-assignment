@@ -10,13 +10,21 @@ const moviesSlice = createSlice({
   name: 'movies',
   initialState: {
     list: [],
+    query: '',
     pagination: {
       page: 0,
       totalPages: 1
     },
     fetchStatus: ''
   },
-  reducers: {},
+  reducers: {
+    updateQuery: (state, action) => {
+      state.query = action.payload
+      state.pagination.page = 0
+      state.pagination.totalPages = 1
+      state.list = []
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
       const newMovies = action.payload.results.map((movie) => {

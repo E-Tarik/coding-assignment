@@ -1,26 +1,30 @@
 import React, { useCallback } from 'react'
-import PropTypes from 'prop-types'
+import debounce from 'lodash/debounce'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import moviesSlice from '../data/moviesSlice'
+import { useSelector, useDispatch } from 'react-redux'
 
 import '../styles/header.scss'
 
-function Header ({ searchMovies }) {
+const { updateQuery } = moviesSlice.actions
+
+function Header () {
   const navigate = useNavigate()
   const starredList = useSelector((state) => state.starred.starredMovies)
   const starredCount = starredList.length
+  const dispatch = useDispatch()
 
-  const onFocus = useCallback(() => {
+  const onInputFocus = useCallback(() => {
     navigate('/')
   }, [])
 
-  const onClick = useCallback((event) => {
-    searchMovies(event.currentTarget.value)
-  }, [searchMovies])
+  const onInputChange = debounce((event) => {
+    dispatch(updateQuery(event.target.value))
+  }, 300)
 
   const resetMovies = useCallback(() => {
-    searchMovies('')
-  }, [searchMovies])
+    dispatch(updateQuery(''))
+  }, [])
 
   return (
     <header>
@@ -66,18 +70,14 @@ function Header ({ searchMovies }) {
           aria-label="Search movies"
           className="form-control rounded"
           data-testid="search-movies"
-          onChange={onClick}
-          onFocus={onFocus}
+          onChange={onInputChange}
+          onFocus={onInputFocus}
           placeholder="Search movies..."
           type="search"
         />
       </div>
     </header>
   )
-}
-
-Header.propTypes = {
-  searchMovies: PropTypes.func.isRequired
 }
 
 export default Header
