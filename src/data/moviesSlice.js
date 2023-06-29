@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 export const fetchMovies = createAsyncThunk('fetch-movies', async (apiUrl) => {
   const response = await fetch(apiUrl)
+
   return response.json()
 })
 

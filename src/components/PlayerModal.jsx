@@ -5,7 +5,7 @@ import YouTubePlayer from './YoutubePlayer'
 import playerSlice from '../data/playerSlice'
 import '../styles/player.scss'
 
-const getMovie = async (id) => {
+export const getMovie = async (id) => {
   const URL = `${ENDPOINT}/movie/${id}?api_key=${API_KEY}&append_to_response=videos`
 
   const videoData = await fetch(URL)

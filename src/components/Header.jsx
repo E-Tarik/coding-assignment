@@ -53,6 +53,7 @@ function Header ({ searchMovies }) {
 
         <NavLink
           className="nav-fav"
+          data-testid="watch-later"
           to="/watch-later"
         >
           Watch later

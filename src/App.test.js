@@ -6,6 +6,10 @@ import { BrowserRouter } from 'react-router-dom'
 import { configureStore } from '@reduxjs/toolkit'
 import App from './App'
 
+beforeEach(() => {
+  fetch.resetMocks()
+})
+
 it('renders watch later link', () => {
   const mockState = {
     watchLater: jest.fn(() => ({watchLaterMovies: []})),
@@ -22,6 +26,10 @@ it('renders watch later link', () => {
 })
 
 it('search for movies', async () => {
+  fetch.mockResponseOnce(JSON.stringify({ videos: {results: [
+    {type: 'Trailer', key: '1234567890'}
+  ]} }))
+
   const mockState = {
     watchLater: jest.fn(() => ({watchLaterMovies: []})),
     movies: jest.fn(() => ({list: [
@@ -53,7 +61,17 @@ it('search for movies', async () => {
 })
 
 it('renders watch later component', async () => {
-  renderWithProviders(<App />)
+  const mockState = {
+    watchLater: jest.fn(() => ({watchLaterMovies: []})),
+    movies: jest.fn(() => ({list: [], pagination: {page: 1, totalPages: 1}})),
+    starred: jest.fn(() => ({starredMovies: []})),
+    watchLater: jest.fn(() => ({watchLaterMovies: []})),
+    player: jest.fn(() => ({currentMovieId: null})),
+  }
+
+  renderWithProviders(<App />, {
+    store: configureStore({reducer: mockState, preloadedState: {}})
+  })
   const user = userEvent.setup()
   await user.click(screen.getByText(/watch later/i))
   expect(screen.getByText(/You have no movies saved to watch later/i)).toBeInTheDocument()
