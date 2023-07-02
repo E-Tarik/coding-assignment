@@ -1,8 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { api } from '../api';
 
-export const fetchMovies = createAsyncThunk('fetch-movies', async apiUrl => {
-  const response = await fetch(apiUrl);
-  return response.json();
+export const fetchMovies = createAsyncThunk('fetch-movies', ({ mode, payload } = {}) => {
+  if (mode === 'search') {
+    return api.movies.search({ query: payload.query });
+  }
+
+  return api.movies.discover();
 });
 
 const moviesSlice = createSlice({
