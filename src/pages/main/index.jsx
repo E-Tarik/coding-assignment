@@ -1,5 +1,5 @@
-import Movie from './Movie';
-import '../styles/movies.scss';
+import { Movie } from '../../components/Movie';
+import '../../styles/movies.scss';
 
 const Movies = ({ movies, viewTrailer, closeCard }) => {
   return (
@@ -13,4 +13,4 @@ const Movies = ({ movies, viewTrailer, closeCard }) => {
   );
 };
 
-export default Movies;
+export { Movies };

@@ -10,4 +10,4 @@ const YoutubePlayer = ({ videoKey }) => (
   />
 );
 
-export default YoutubePlayer;
+export { YoutubePlayer };

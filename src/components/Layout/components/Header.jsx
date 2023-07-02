@@ -1,7 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import '../styles/header.scss';
+import '../../../styles/header.scss';
 
 const Header = ({ searchMovies }) => {
   const { starredMovies } = useSelector(state => state.starred);
@@ -45,4 +45,4 @@ const Header = ({ searchMovies }) => {
   );
 };
 
-export default Header;
+export { Header };

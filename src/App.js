@@ -3,11 +3,11 @@ import { Routes, Route, createSearchParams, useSearchParams, useNavigate } from 
 import { useDispatch, useSelector } from 'react-redux';
 import 'reactjs-popup/dist/index.css';
 import { fetchMovies } from './data/moviesSlice';
-import Header from './components/Header';
-import Movies from './components/Movies';
-import Starred from './components/Starred';
-import WatchLater from './components/WatchLater';
-import YouTubePlayer from './components/YoutubePlayer';
+import { Movies } from './pages/main';
+import { Starred } from './pages/starred';
+import { WatchLater } from './pages/watch-later';
+import { Layout } from './components/Layout';
+import { YoutubePlayer } from './components/YoutubePlayer';
 import './app.scss';
 import { api } from './api';
 
@@ -69,16 +69,14 @@ const App = () => {
   }, []);
 
   return (
-    <div className="App">
-      <Header
-        searchMovies={searchMovies}
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
-      />
-
-      <div className="container">
+    <Layout
+      searchMovies={searchMovies}
+      searchParams={searchParams}
+      setSearchParams={setSearchParams}
+    >
+      <>
         {videoKey ? (
-          <YouTubePlayer videoKey={videoKey} />
+          <YoutubePlayer videoKey={videoKey} />
         ) : (
           <div style={{ padding: '30px' }}>
             <h6>no trailer available. Try another movie</h6>
@@ -94,8 +92,8 @@ const App = () => {
           <Route path="/watch-later" element={<WatchLater viewTrailer={viewTrailer} />} />
           <Route path="*" element={<h1 className="not-found">Page Not Found</h1>} />
         </Routes>
-      </div>
-    </div>
+      </>
+    </Layout>
   );
 };
 
