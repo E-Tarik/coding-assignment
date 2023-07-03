@@ -1,6 +1,8 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+import { Icon } from '../../Icon';
+
 import '../../../styles/header.scss';
 
 const Header = ({ searchMovies }) => {
@@ -9,19 +11,17 @@ const Header = ({ searchMovies }) => {
   return (
     <header>
       <Link to="/" data-testid="home" onClick={() => searchMovies('')}>
-        <i className="bi bi-film" />
+        <Icon iconName="film" width="1.2rem" height="1.2rem" />
       </Link>
 
       <nav>
         <NavLink to="/starred" data-testid="nav-starred" className="nav-starred">
-          {starredMovies.length > 0 ? (
-            <>
-              <i className="bi bi-star-fill bi-star-fill-white" />
-              <sup className="star-number">{starredMovies.length}</sup>
-            </>
-          ) : (
-            <i className="bi bi-star" />
-          )}
+          <Icon
+            iconName={starredMovies.length > 0 ? 'star-fill' : 'star'}
+            width="1.2rem"
+            height="1.2rem"
+          />
+          {starredMovies.length > 0 && <sup className="star-number">{starredMovies.length}</sup>}
         </NavLink>
         <NavLink to="/watch-later" className="nav-fav">
           watch later

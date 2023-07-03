@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import starredSlice from '../../data/starredSlice';
 import watchLaterSlice from '../../data/watchLaterSlice';
 import placeholder from '../../assets/not-found-500X750.jpeg';
+import { Icon } from '../Icon';
 
 const Movie = ({ movie, viewTrailer, closeCard }) => {
   const state = useSelector(state => state);
@@ -42,7 +43,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
                   )
                 }
               >
-                <i className="bi bi-star" />
+                <Icon iconName="star" />
               </span>
             ) : (
               <span
@@ -50,7 +51,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
                 data-testid="unstar-link"
                 onClick={() => dispatch(unstarMovie(movie))}
               >
-                <i className="bi bi-star-fill" data-testid="star-fill" />
+                <Icon iconName="star-fill" data-testid="star-fill" />
               </span>
             )}
             {!watchLater.watchLaterMovies.map(movie => movie.id).includes(movie.id) ? (
@@ -79,7 +80,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
                 className="btn btn-light btn-watch-later blue"
                 onClick={() => dispatch(removeFromWatchLater(movie))}
               >
-                <i className="bi bi-check"></i>
+                <Icon iconName="check" width="0.6rem" height="0.6rem" />
               </button>
             )}
             <button type="button" className="btn btn-dark" onClick={() => viewTrailer(movie)}>

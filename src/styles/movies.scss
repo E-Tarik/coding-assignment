@@ -130,6 +130,17 @@
     margin: 0 5px;
     color: #e50914;
     cursor: pointer;
+
+    .bi-star {
+      width: 1rem;
+      height: 1rem;
+
+      @media (max-width: 520px) {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+    }
+
     @media (max-width: 520px) {
       font-size: 25px;
     }

@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import watchLaterSlice from '../../data/watchLaterSlice';
 import { Movie } from '../../components/Movie';
+import { Icon } from '../../components/Icon';
 import '../../styles/starred.scss';
 
 const WatchLater = ({ viewTrailer }) => {
@@ -31,7 +32,7 @@ const WatchLater = ({ viewTrailer }) => {
 
       {watchLater.watchLaterMovies.length === 0 && (
         <div className="text-center empty-cart">
-          <i className="bi bi-heart" />
+          <Icon iconName="heart" width="1rem" height="1rem" />
           <p>You have no movies saved to watch later.</p>
           <p>
             Go to <Link to="/">Home</Link>

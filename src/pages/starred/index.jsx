@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import starredSlice from '../../data/starredSlice';
 import { Movie } from '../../components/Movie';
+import { Icon } from '../../components/Icon';
 import '../../styles/starred.scss';
 
 const Starred = ({ viewTrailer }) => {
@@ -31,7 +32,7 @@ const Starred = ({ viewTrailer }) => {
 
       {starred.starredMovies.length === 0 && (
         <div className="text-center empty-cart">
-          <i className="bi bi-star" />
+          <Icon iconName="star" width="1rem" height="1rem" />
           <p>There are no starred movies.</p>
           <p>
             Go to <Link to="/">Home</Link>
