@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import starredSlice from '../../data/starredSlice';
 import { Movie } from '../../components/Movie';
 import { Icon } from '../../components/Icon';
-import '../../styles/starred.scss';
+import './starred.scss';
 
 const Starred = ({ viewTrailer }) => {
   const state = useSelector(state => state);

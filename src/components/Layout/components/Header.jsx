@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { Icon } from '../../Icon';
 
-import '../../../styles/header.scss';
+import './header.scss';
 
 const Header = ({ searchMovies }) => {
   const { starredMovies } = useSelector(state => state.starred);

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import watchLaterSlice from '../../data/watchLaterSlice';
 import { Movie } from '../../components/Movie';
 import { Icon } from '../../components/Icon';
-import '../../styles/starred.scss';
+import './watch-later.scss';
 
 const WatchLater = ({ viewTrailer }) => {
   const state = useSelector(state => state);
