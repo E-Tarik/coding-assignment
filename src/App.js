@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route, createSearchParams, useSearchParams, useNavigate } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  createSearchParams,
+  useSearchParams,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import 'reactjs-popup/dist/index.css';
-import { fetchMovies } from './data/moviesSlice';
+import { fetchMovies, searchMovies as searchMoviesAction } from './data/moviesSlice';
 import { Movies } from './pages/main';
 import { Starred } from './pages/starred';
 import { WatchLater } from './pages/watch-later';
@@ -20,6 +27,7 @@ const App = () => {
   const [videoKey, setVideoKey] = useState();
   const [isOpen, setOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const closeModal = () => setOpen(false);
 
@@ -27,7 +35,7 @@ const App = () => {
 
   const getSearchResults = query => {
     if (query !== '') {
-      dispatch(fetchMovies({ mode: 'search', payload: { query } }));
+      dispatch(searchMoviesAction({ query }));
       setSearchParams(createSearchParams({ search: query }));
     } else {
       dispatch(fetchMovies());
@@ -36,13 +44,16 @@ const App = () => {
   };
 
   const searchMovies = query => {
-    navigate('/');
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
+
     getSearchResults(query);
   };
 
   const getMovies = () => {
     if (searchQuery) {
-      dispatch(fetchMovies({ mode: 'search', payload: { searchQuery } }));
+      dispatch(searchMoviesAction({ searchQuery }));
     } else {
       dispatch(fetchMovies());
     }

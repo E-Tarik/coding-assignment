@@ -1,13 +1,11 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { api } from '../api';
 
-export const fetchMovies = createAsyncThunk('fetch-movies', ({ mode, payload } = {}) => {
-  if (mode === 'search') {
-    return api.movies.search({ query: payload.query });
-  }
+export const fetchMovies = createAsyncThunk('fetch-movies', () => api.movies.discover());
 
-  return api.movies.discover();
-});
+export const searchMovies = createAsyncThunk('search-movies', payload =>
+  api.movies.search({ query: payload.query }),
+);
 
 const moviesSlice = createSlice({
   name: 'movies',
@@ -18,14 +16,14 @@ const moviesSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchMovies.fulfilled, (state, action) => {
+      .addMatcher(isAnyOf(fetchMovies.fulfilled, searchMovies.fulfilled), (state, action) => {
         state.movies = action.payload;
         state.fetchStatus = 'success';
       })
-      .addCase(fetchMovies.pending, state => {
+      .addMatcher(isAnyOf(fetchMovies.pending, searchMovies.pending), state => {
         state.fetchStatus = 'loading';
       })
-      .addCase(fetchMovies.rejected, state => {
+      .addMatcher(isAnyOf(fetchMovies.rejected, searchMovies.rejected), state => {
         state.fetchStatus = 'error';
       });
   },
