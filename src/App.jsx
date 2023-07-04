@@ -1,16 +1,7 @@
-import { useEffect, useState } from 'react';
-import {
-  Routes,
-  Route,
-  createSearchParams,
-  useSearchParams,
-  useNavigate,
-  useLocation,
-} from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import 'reactjs-popup/dist/index.css';
-import { fetchMovies, searchMovies as searchMoviesAction } from './data/moviesSlice';
-import { Movies } from './pages/main';
+import { Main } from './pages/main';
 import { Starred } from './pages/starred';
 import { WatchLater } from './pages/watch-later';
 import { Layout } from './components/Layout';
@@ -19,45 +10,12 @@ import './app.scss';
 import { api } from './api';
 
 const App = () => {
-  const state = useSelector(state => state);
-  const { movies } = state;
-  const dispatch = useDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get('search');
   const [videoKey, setVideoKey] = useState();
   const [isOpen, setOpen] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const closeModal = () => setOpen(false);
 
   const closeCard = () => {};
-
-  const getSearchResults = query => {
-    if (query !== '') {
-      dispatch(searchMoviesAction({ query }));
-      setSearchParams(createSearchParams({ search: query }));
-    } else {
-      dispatch(fetchMovies());
-      setSearchParams();
-    }
-  };
-
-  const searchMovies = query => {
-    if (location.pathname !== '/') {
-      navigate('/');
-    }
-
-    getSearchResults(query);
-  };
-
-  const getMovies = () => {
-    if (searchQuery) {
-      dispatch(searchMoviesAction({ searchQuery }));
-    } else {
-      dispatch(fetchMovies());
-    }
-  };
 
   const viewTrailer = movie => {
     getMovie(movie.id);
@@ -75,16 +33,8 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
-    getMovies();
-  }, []);
-
   return (
-    <Layout
-      searchMovies={searchMovies}
-      searchParams={searchParams}
-      setSearchParams={setSearchParams}
-    >
+    <Layout>
       <>
         {videoKey ? (
           <YoutubePlayer videoKey={videoKey} />
@@ -95,10 +45,7 @@ const App = () => {
         )}
 
         <Routes>
-          <Route
-            path="/"
-            element={<Movies movies={movies} viewTrailer={viewTrailer} closeCard={closeCard} />}
-          />
+          <Route path="/" element={<Main viewTrailer={viewTrailer} closeCard={closeCard} />} />
           <Route path="/starred" element={<Starred viewTrailer={viewTrailer} />} />
           <Route path="/watch-later" element={<WatchLater viewTrailer={viewTrailer} />} />
           <Route path="*" element={<h1 className="not-found">Page Not Found</h1>} />

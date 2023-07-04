@@ -1,13 +1,8 @@
 import { Header } from './components/Header';
 
-const Layout = ({ children, searchMovies, searchParams, setSearchParams }) => (
+const Layout = ({ children }) => (
   <div className="App">
-    <Header
-      searchMovies={searchMovies}
-      searchParams={searchParams}
-      setSearchParams={setSearchParams}
-    />
-
+    <Header />
     <div className="container">{children}</div>
   </div>
 );

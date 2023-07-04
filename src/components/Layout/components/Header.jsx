@@ -1,16 +1,28 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useSearchParams, createSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { Icon } from '../../Icon';
 
 import './header.scss';
 
-const Header = ({ searchMovies }) => {
+const Header = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
   const { starredMovies } = useSelector(state => state.starred);
+
+  const searchQuery = searchParams.get('search');
+
+  const onSearchChange = e => {
+    navigate({
+      pathname: '/',
+      search: createSearchParams({ search: e.target.value }).toString(),
+    });
+  };
 
   return (
     <header>
-      <Link to="/" data-testid="home" onClick={() => searchMovies('')}>
+      <Link to="/" data-testid="home">
         <Icon iconName="film" width="1.2rem" height="1.2rem" />
       </Link>
 
@@ -29,17 +41,16 @@ const Header = ({ searchMovies }) => {
       </nav>
 
       <div className="input-group rounded">
-        <Link to="/" onClick={e => searchMovies('')} className="search-link">
-          <input
-            type="search"
-            data-testid="search-movies"
-            onKeyUp={e => searchMovies(e.target.value)}
-            className="form-control rounded"
-            placeholder="Search movies..."
-            aria-label="Search movies"
-            aria-describedby="search-addon"
-          />
-        </Link>
+        <input
+          value={searchQuery || ''}
+          onChange={onSearchChange}
+          type="search"
+          data-testid="search-movies"
+          className="form-control rounded"
+          placeholder="Search movies..."
+          aria-label="Search movies"
+          aria-describedby="search-addon"
+        />
       </div>
     </header>
   );
