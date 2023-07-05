@@ -1,0 +1,10 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 14rem));
+  gap: 2rem 1rem;
+  justify-content: center;
+
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(4, minmax(7rem, 14rem));
+  }
+}

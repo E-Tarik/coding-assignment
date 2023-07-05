@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import watchLaterSlice from '../../data/watchLaterSlice';
 import { Movie } from '../../components/Movie';
 import { Icon } from '../../components/Icon';
+import { MoviesGrid } from '../../components/MoviesGrid';
+
 import './watch-later.scss';
 
 const WatchLater = ({ viewTrailer }) => {
@@ -16,11 +18,11 @@ const WatchLater = ({ viewTrailer }) => {
       {watchLater.watchLaterMovies.length > 0 && (
         <div data-testid="watch-later-movies" className="starred-movies">
           <h6 className="header">Watch Later List</h6>
-          <div className="row">
+          <MoviesGrid>
             {watchLater.watchLaterMovies.map(movie => (
               <Movie movie={movie} key={movie.id} viewTrailer={viewTrailer} />
             ))}
-          </div>
+          </MoviesGrid>
 
           <footer className="text-center">
             <button className="btn btn-primary" onClick={() => dispatch(removeAllWatchLater())}>

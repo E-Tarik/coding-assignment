@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import starredSlice from '../../data/starredSlice';
 import { Movie } from '../../components/Movie';
 import { Icon } from '../../components/Icon';
+import { MoviesGrid } from '../../components/MoviesGrid';
+
 import './starred.scss';
 
 const Starred = ({ viewTrailer }) => {
@@ -16,11 +18,11 @@ const Starred = ({ viewTrailer }) => {
       {starred.starredMovies.length > 0 && (
         <div data-testid="starred-movies" className="starred-movies">
           <h6 className="header">Starred movies</h6>
-          <div className="row">
+          <MoviesGrid>
             {starred.starredMovies.map(movie => (
               <Movie movie={movie} key={movie.id} viewTrailer={viewTrailer} />
             ))}
-          </div>
+          </MoviesGrid>
 
           <footer className="text-center">
             <button className="btn btn-primary" onClick={() => dispatch(clearAllStarred())}>

@@ -5,6 +5,7 @@ import debounce from 'lodash.debounce';
 
 import { fetchMovies, searchMovies as searchMoviesAction } from '../../data/moviesSlice';
 import { Movie } from '../../components/Movie';
+import { MoviesGrid } from '../../components/MoviesGrid';
 
 import './main.scss';
 
@@ -32,13 +33,13 @@ const Main = ({ viewTrailer, closeCard }) => {
   }, [searchQuery, getMovies, onSearchMovies]);
 
   return (
-    <div data-testid="movies">
+    <MoviesGrid data-testid="movies">
       {movies.movies.results?.map(movie => {
         return (
           <Movie movie={movie} key={movie.id} viewTrailer={viewTrailer} closeCard={closeCard} />
         );
       })}
-    </div>
+    </MoviesGrid>
   );
 };
 
