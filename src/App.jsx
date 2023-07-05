@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import 'reactjs-popup/dist/index.css';
 import { Main } from './pages/main';
@@ -6,37 +7,32 @@ import { Starred } from './pages/starred';
 import { WatchLater } from './pages/watch-later';
 import { Layout } from './components/Layout';
 import { YoutubePlayer } from './components/YoutubePlayer';
+import { getMovieTrailer } from './data/moviesSlice';
 import './app.scss';
-import { api } from './api';
 
 const App = () => {
   const [videoKey, setVideoKey] = useState();
   const [isOpen, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const closeModal = () => setOpen(false);
 
   const closeCard = () => {};
 
-  const viewTrailer = movie => {
-    getMovie(movie.id);
-    if (!videoKey) setOpen(true);
+  const viewTrailer = async (movie) => {
+    const trailerKey = await dispatch(getMovieTrailer({ id: movie.id })).unwrap();
+
     setOpen(true);
-  };
 
-  const getMovie = async id => {
-    setVideoKey(null);
-    const videoData = await api.movies.movieDetails({ movieId: id });
-
-    if (videoData.videos && videoData.videos.results.length) {
-      const trailer = videoData.videos.results.find(vid => vid.type === 'Trailer');
-      setVideoKey(trailer ? trailer.key : videoData.videos.results[0].key);
+    if (trailerKey) {
+      setVideoKey(trailerKey);
     }
   };
 
   return (
     <Layout>
       <>
-        {videoKey ? (
+        {isOpen && videoKey ? (
           <YoutubePlayer videoKey={videoKey} />
         ) : (
           <div style={{ padding: '30px' }}>
