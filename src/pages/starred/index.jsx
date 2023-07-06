@@ -7,7 +7,7 @@ import { MoviesGrid } from '../../components/MoviesGrid';
 
 import './starred.scss';
 
-const Starred = ({ viewTrailer }) => {
+const Starred = () => {
   const state = useSelector(state => state);
   const { starred } = state;
   const { clearAllStarred } = starredSlice.actions;
@@ -20,7 +20,7 @@ const Starred = ({ viewTrailer }) => {
           <h6 className="header">Starred movies</h6>
           <MoviesGrid>
             {starred.starredMovies.map(movie => (
-              <Movie movie={movie} key={movie.id} viewTrailer={viewTrailer} />
+              <Movie movie={movie} key={movie.id} />
             ))}
           </MoviesGrid>
 

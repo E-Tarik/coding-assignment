@@ -7,7 +7,7 @@ import { MoviesGrid } from '../../components/MoviesGrid';
 
 import './watch-later.scss';
 
-const WatchLater = ({ viewTrailer }) => {
+const WatchLater = () => {
   const state = useSelector(state => state);
   const { watchLater } = state;
   const { removeAllWatchLater } = watchLaterSlice.actions;
@@ -20,7 +20,7 @@ const WatchLater = ({ viewTrailer }) => {
           <h6 className="header">Watch Later List</h6>
           <MoviesGrid>
             {watchLater.watchLaterMovies.map(movie => (
-              <Movie movie={movie} key={movie.id} viewTrailer={viewTrailer} />
+              <Movie movie={movie} key={movie.id} />
             ))}
           </MoviesGrid>
 

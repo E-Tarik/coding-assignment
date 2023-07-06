@@ -9,7 +9,7 @@ import { MoviesGrid } from '../../components/MoviesGrid';
 
 import './main.scss';
 
-const Main = ({ viewTrailer, closeCard }) => {
+const Main = () => {
   const movies = useSelector(state => state.movies);
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
@@ -35,9 +35,7 @@ const Main = ({ viewTrailer, closeCard }) => {
   return (
     <MoviesGrid data-testid="movies">
       {movies.movies.results?.map(movie => {
-        return (
-          <Movie movie={movie} key={movie.id} viewTrailer={viewTrailer} closeCard={closeCard} />
-        );
+        return <Movie movie={movie} key={movie.id} />;
       })}
     </MoviesGrid>
   );
