@@ -35,7 +35,7 @@ const Header = () => {
           />
           {starredMovies.length > 0 && <sup className="star-number">{starredMovies.length}</sup>}
         </NavLink>
-        <NavLink to="/watch-later" className="nav-fav">
+        <NavLink to="/watch-later" className="nav-fav" data-testid="nav-watch-later">
           watch later
         </NavLink>
       </nav>

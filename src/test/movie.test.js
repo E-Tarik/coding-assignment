@@ -2,6 +2,23 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from './utils';
 import App from '../App';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
+import { searchMoviesJSONMock, discoverMoviesJSONMock } from './movies.mocks';
+import { ENDPOINT } from '../api/movies-api';
+
+const server = setupServer(
+  rest.get(`${ENDPOINT}/discover/movie`, (req, res, ctx) => {
+    return res(ctx.json(discoverMoviesJSONMock));
+  }),
+  rest.get(`${ENDPOINT}/search/movie`, (req, res, ctx) => {
+    return res(ctx.json(searchMoviesJSONMock));
+  }),
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
 it('movies starred and saved to watch later', async () => {
   renderWithProviders(<App />);

@@ -28,7 +28,10 @@ export function renderWithProviders(
   function Wrapper({ children }) {
     return (
       <Provider store={store}>
-        <BrowserRouter>{children}</BrowserRouter>
+        <BrowserRouter>
+          <div id="modal" />
+          {children}
+        </BrowserRouter>
       </Provider>
     );
   }

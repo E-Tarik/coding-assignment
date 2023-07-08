@@ -2,6 +2,30 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from './test/utils';
 import App from './App';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
+import { searchMoviesJSONMock, discoverMoviesJSONMock, movieDetailsJSONMock } from './test/movies.mocks';
+import { ENDPOINT } from './api/movies-api';
+
+jest.mock('react-player/lazy', () => {
+  return jest.requireActual('react-player');
+});
+
+const server = setupServer(
+  rest.get(`${ENDPOINT}/discover/movie`, (req, res, ctx) => {
+    return res(ctx.json(discoverMoviesJSONMock));
+  }),
+  rest.get(`${ENDPOINT}/search/movie`, (req, res, ctx) => {
+    return res(ctx.json(searchMoviesJSONMock));
+  }),
+  rest.get(`${ENDPOINT}/movie/:movieId`, (req, res, ctx) => {
+    return res(ctx.json(movieDetailsJSONMock));
+  }),
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
 it('renders watch later link', () => {
   renderWithProviders(<App />);
