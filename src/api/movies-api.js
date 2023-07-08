@@ -12,9 +12,10 @@ const request = async (url, { params = {} } = {}) => {
 };
 
 const api = {
-  discover: async ({ sortBy = 'vote_count.desc' } = {}) =>
-    request('/discover/movie', { params: { sort_by: sortBy } }),
-  search: async ({ query = '' } = {}) => request('/search/movie', { params: { query } }),
+  discover: async ({ sortBy = 'vote_count.desc', page = 1 } = {}) =>
+    request('/discover/movie', { params: { sort_by: sortBy, page } }),
+  search: async ({ query = '', page = 1 } = {}) =>
+    request('/search/movie', { params: { query, page } }),
   movieDetails: ({ movieId, appendToResponse = 'videos' }) =>
     request(`/movie/${movieId}`, { params: { append_to_response: appendToResponse } }),
 };
