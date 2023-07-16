@@ -16,7 +16,7 @@ const Starred = ({ viewTrailer }) => {
       {starred.starredMovies.length > 0 && (
         <div data-testid="starred-movies" className="starred-movies">
           <h6 className="header">Starred movies</h6>
-          <div className="row">
+          <div className="row movies-grid">
             {starred.starredMovies.map((movie) => (
               <Movie movie={movie} key={movie.id} viewTrailer={viewTrailer} />
             ))}
