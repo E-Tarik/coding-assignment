@@ -2,7 +2,7 @@ import 'reactjs-popup/dist/index.css'
 
 import './app.scss'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Route,
@@ -13,16 +13,17 @@ import {
 } from 'react-router-dom'
 
 import Header from './components/Header'
+import { Modal } from './components/Modal'
 import Movies from './components/Movies'
 import Starred from './components/Starred'
 import WatchLater from './components/WatchLater'
-import YouTubePlayer from './components/YoutubePlayer'
 import {
   API_KEY,
   ENDPOINT,
   ENDPOINT_DISCOVER,
   ENDPOINT_SEARCH,
 } from './constants'
+import modalSlice from './data/modalSlice'
 import { fetchMovies } from './data/moviesSlice'
 
 const App = () => {
@@ -30,8 +31,8 @@ const App = () => {
   const dispatch = useDispatch()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchQuery = searchParams.get('search')
-  const [videoKey, setVideoKey] = useState()
   const navigate = useNavigate()
+  const { showModal, setVideoKey } = modalSlice.actions
 
   const closeCard = () => {}
 
@@ -72,8 +73,11 @@ const App = () => {
       const trailer = videoData.videos.results.find(
         (vid) => vid.type === 'Trailer'
       )
-      setVideoKey(trailer ? trailer.key : videoData.videos.results[0].key)
+      dispatch(
+        setVideoKey(trailer ? trailer.key : videoData.videos.results[0].key)
+      )
     }
+    dispatch(showModal())
   }
 
   useEffect(() => {
@@ -87,16 +91,7 @@ const App = () => {
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
-
       <div className="container">
-        {videoKey ? (
-          <YouTubePlayer videoKey={videoKey} />
-        ) : (
-          <div className="no-trailer-wrapper">
-            <h6>no trailer available. Try another movie</h6>
-          </div>
-        )}
-
         <Routes>
           <Route
             path="/"
@@ -122,6 +117,7 @@ const App = () => {
           />
         </Routes>
       </div>
+      <Modal />
     </div>
   )
 }
