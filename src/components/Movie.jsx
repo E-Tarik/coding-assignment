@@ -1,12 +1,12 @@
 import classNames from 'classnames'
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import placeholder from '../assets/not-found-500X750.jpeg'
 import starredSlice from '../data/starredSlice'
 import watchLaterSlice from '../data/watchLaterSlice'
 
-const Movie = ({ movie, viewTrailer, closeCard }) => {
+const Movie = forwardRef(({ movie, viewTrailer, closeCard }, ref) => {
   const { starred, watchLater } = useSelector((state) => state)
   const { starMovie, unstarMovie } = starredSlice.actions
   const { addToWatchLater, removeFromWatchLater } = watchLaterSlice.actions
@@ -29,7 +29,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
   }
 
   return (
-    <div className="wrapper">
+    <div className="wrapper" ref={ref}>
       <div
         className={classNames('card', { opened })}
         onClick={() => toggleOpened(true)}
@@ -106,6 +106,6 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
       </div>
     </div>
   )
-}
+})
 
 export default Movie
